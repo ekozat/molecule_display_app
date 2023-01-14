@@ -8,10 +8,10 @@ void atomset (atom *atom, char element[3], double *x, double *y, double *z){
 }
 
 void atomget (atom *atom, char element[3], double *x, double *y, double *z){
-    x = &(atom->x)
-    y = &(atom->y)
-    z = &(atom->z)
-    strcpy(element, &(atom->))
+    *x = atom->x;
+    *y = atom->y;
+    *z = atom->z;
+    strcpy(element, atom->element);
 }
 
 
