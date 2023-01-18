@@ -1,3 +1,6 @@
+#ifndef _mol_h
+#define _mol_h
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -43,3 +46,5 @@ void xrotation (xform_matrix xform_matrix, unsigned short deg);
 void yrotation (xform_matrix xform_matrix, unsigned short deg);
 void zrotation (xform_matrix xform_matrix, unsigned short deg);
 void mol_xform (molecule *molecule, xform_matrix matrix);
+
+#endif
