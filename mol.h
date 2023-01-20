@@ -1,3 +1,6 @@
+//asks if _mol_h is defined. If not defined, executes everything if statement (the entire header file)
+//if already defined, doesn't enter the if statement and exits. Ensures that the same header file doesn't get 
+//stored in memory twice. Happens in nested header files
 #ifndef _mol_h
 #define _mol_h
 
@@ -29,7 +32,7 @@ typedef struct molecule
     bond *bonds, **bond_ptrs;
 }molecule;
 
-typdef double xform_matrix[3][3];
+typedef double xform_matrix[3][3];
 
 //FUNCTIONS
 void atomset (atom *atom, char element[3], double *x, double *y, double *z);
@@ -46,5 +49,4 @@ void xrotation (xform_matrix xform_matrix, unsigned short deg);
 void yrotation (xform_matrix xform_matrix, unsigned short deg);
 void zrotation (xform_matrix xform_matrix, unsigned short deg);
 void mol_xform (molecule *molecule, xform_matrix matrix);
-
 #endif
