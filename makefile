@@ -5,6 +5,7 @@ all: test
 
 test: test1.o mol.o
 	$(CC) $^ -o test
+	./test
 
 test1.o: test1.c mol.h
 	$(CC) $(CFLAGS) -c $<
