@@ -1,16 +1,16 @@
-CC = gcc
+CC = clang
 CFLAGS = -std=c99 -Wall -pedantic
 
-all: main
+all: test
 
-main: main.o mol.o
-	$(CC) $(CFLAGS) main.o mol.o -o main
+test: test1.o mol.o
+	$(CC) $^ -o test
 
-main.o: main.c
-	$(CC) $(CFLAGS) main.c 
+test1.o: test1.c mol.h
+	$(CC) $(CFLAGS) -c $<
 
 mol.o: mol.c mol.h
-	$(CC) $(CFLAGS) mol.c
+	$(CC) $(CFLAGS) -c $<
 
 clean:
-	rm -f *.o main
+	rm -f *.o test
