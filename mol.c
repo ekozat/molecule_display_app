@@ -33,6 +33,8 @@ void bondget (bond *bond, atom **a1, atom **a2, unsigned char *epairs){
     *a2 = bond->a2;
     *epairs = bond->epairs;
 }
+
+// need to test
 molecule *molmalloc (unsigned short atom_max, unsigned short bond_max){
     //assign memory for molecule struct
     molecule *mol = malloc(sizeof(struct molecule));
@@ -52,11 +54,20 @@ molecule *molmalloc (unsigned short atom_max, unsigned short bond_max){
     
     return mol;
 }
+//what kind of copy?
 molecule *molcopy (molecule *src){
+    //wait so do we use molmalloc to create a new molecule?
+    
+
 
 }
+//not tested
 void molfree (molecule *ptr){
-
+    free(ptr->atom_ptrs);
+    free(ptr->atoms);
+    free(ptr->bond_ptrs);
+    free(ptr->bonds);
+    free(ptr);
 }
 void molappend_atom (molecule *molecule, atom *atom){
 
