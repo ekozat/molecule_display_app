@@ -61,7 +61,8 @@ molecule *molcopy (molecule *src){
 
 
 }
-//not tested
+// not tested
+// set pointers to NULL afterward
 void molfree (molecule *ptr){
     free(ptr->atom_ptrs);
     free(ptr->atoms);
@@ -69,8 +70,45 @@ void molfree (molecule *ptr){
     free(ptr->bonds);
     free(ptr);
 }
+// I don't know how to test this
+// It might be going into bad memory if the sort rearranges stuff
 void molappend_atom (molecule *molecule, atom *atom){
+    if (molecule->atom_max == 0){
+        molecule->atom_max++;
+        // should we malloc or no? im assuming we do
+        // wait but what if we can molappend_atom and then molmalloc - realloc?
+        // ^no, cause we can't call molmalloc with the same molecule
+        molecule->atoms = malloc(sizeof(struct atom)* atom_max);
+        mol->atom_ptrs = malloc(sizeof(struct atom*) * atom_max);
+    }
 
+    // have to test the realloc 
+    // reallocs, then adds the atom in the next if
+    if (molecule->atom_no == molecule->atom_max){
+        // doubles the max
+        molecule->atom_max *= 2;
+
+        // reallocs for more memory
+        molecule->atoms = realloc(molecule->atoms, sizeof(struct atom)* atom_max);
+        mol->atom_ptrs = realloc(mol->atom_ptrs, sizeof(struct atom*) * atom_max);
+    }
+
+    if (molecule->atom_no < molecule->atom_max){
+        // put values from passed in atom into the atom stored in molecule
+        // check if its actual empty space as well
+        atomget(atom, molecule->atoms[molecule->atom_no].element, 
+                &(molecule->atoms[molecule->atom_no].x),
+                &(molecule->atoms[molecule->atom_no].y),
+                &(molecule->atoms[molecule->atom_no].z));
+
+        printf("%f\n", molecule->atoms[molecule->atom_no].x);
+        printf("%s\n", molecule->atoms[molecule->atom_no].element);
+        // printf("%f\n", molecule->atoms[1000].x);
+
+        molecule->atom_ptrs[molecule->atom_no] = &molecule->atoms[molecule->atom_no];
+        
+        molecule->atom_no++;
+    }
 }
 void molappend_bond (molecule *molecule, bond *bond){
 
