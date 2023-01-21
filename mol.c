@@ -78,8 +78,8 @@ void molappend_atom (molecule *molecule, atom *atom){
         // should we malloc or no? im assuming we do
         // wait but what if we can molappend_atom and then molmalloc - realloc?
         // ^no, cause we can't call molmalloc with the same molecule
-        molecule->atoms = malloc(sizeof(struct atom)* atom_max);
-        mol->atom_ptrs = malloc(sizeof(struct atom*) * atom_max);
+        molecule->atoms = malloc(sizeof(struct atom)* molecule->atom_max);
+        molecule->atom_ptrs = malloc(sizeof(struct atom*) * molecule->atom_max);
     }
 
     // have to test the realloc 
@@ -89,8 +89,8 @@ void molappend_atom (molecule *molecule, atom *atom){
         molecule->atom_max *= 2;
 
         // reallocs for more memory
-        molecule->atoms = realloc(molecule->atoms, sizeof(struct atom)* atom_max);
-        mol->atom_ptrs = realloc(mol->atom_ptrs, sizeof(struct atom*) * atom_max);
+        molecule->atoms = realloc(molecule->atoms, sizeof(struct atom)* molecule->atom_max);
+        molecule->atom_ptrs = realloc(molecule->atom_ptrs, sizeof(struct atom*) * molecule->atom_max);
     }
 
     if (molecule->atom_no < molecule->atom_max){
