@@ -3,3 +3,6 @@ test1.o
 test
 mol.o
 makefile (2)
+ptest.c
+ptest.o
+ptest
