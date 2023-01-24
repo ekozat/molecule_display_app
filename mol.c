@@ -177,6 +177,17 @@ void mol_sort (molecule *molecule){
 
 }
 
+int cmpfunc (const void *a, const void *b){
+    double *double_ptr_l, *double_ptr_r;
+
+    // Get the values at given addresses
+    double_ptr_l = (double *)a;
+    double_ptr_r = (double *)b;
+
+    // return the smaller of the two (must be an int - qsort will fail with a double)
+    // doesn't matter that it's truncation
+    return (int)(*double_ptr_l - *double_ptr_r);
+}
 
 
 
