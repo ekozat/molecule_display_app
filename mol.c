@@ -150,7 +150,7 @@ void molappend_bond (molecule *molecule, bond *bond){
     
     // have to test the realloc 
     // reallocs, then adds the atom in the next if
-    if (molecule->bond_no == molecule->bond_no){
+    if (molecule->bond_no == molecule->bond_max){
         // doubles the max
         molecule->bond_max *= 2;
 
