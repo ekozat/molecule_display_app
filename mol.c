@@ -135,9 +135,48 @@ void molappend_atom (molecule *molecule, atom *atom){
         molecule->atom_no++;
     }
 }
+// is it any different for bonds?
+// more complicated because of the atom pointers
 void molappend_bond (molecule *molecule, bond *bond){
+    // would we malloc two atoms? Good test case: checking if the amount of atoms makes sense 
+    // for the amount of bonds
+     if (molecule->bond_max == 0){
+        molecule->bond_max++;
+
+        // Check pointer address - malloc will come back as NULL if it errors
+        molecule->bonds = malloc(sizeof(struct bond)* molecule->bond_max);
+        molecule->bond_ptrs = malloc(sizeof(struct bond*) * molecule->bond_max);
+    }
+    
+    // have to test the realloc 
+    // reallocs, then adds the atom in the next if
+    if (molecule->bond_no == molecule->bond_no){
+        // doubles the max
+        molecule->bond_max *= 2;
+
+        // reallocs for more memory
+        molecule->bonds = realloc(molecule->bonds, sizeof(struct bond)* molecule->bond_max);
+        molecule->bond_ptrs = realloc(molecule->bond_ptrs, sizeof(struct bond*) * molecule->bond_max);
+    }
+
+     if (molecule->bond_no < molecule->bond_max){
+        bondget(bond, &molecule->bonds->a1, &molecule->bonds->a2, &molecule->bonds->epairs);
+        // bondget(bond, molecule->bonds[molecule->bond_no]);
+
+        printf("%f\n", molecule->bonds->a1[0].x);
+        printf("%s\n", molecule->bonds->a1[0].element);
+        // printf("%f\n", molecule->atoms[1000].x);
+
+        molecule->bond_ptrs[molecule->bond_no] = &molecule->bonds[molecule->bond_no];
+        
+        molecule->bond_no++;
+    }
+}
+
+void mol_sort (molecule *molecule){
 
 }
+
 
 
 
