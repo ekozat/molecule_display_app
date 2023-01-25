@@ -13,7 +13,7 @@ Questions
 
 
 // finished
-// Purpose:  
+// Purpose: Function should copy the values pointed to by element, x, y, and z into atom
 void atomset (atom *atom, char element[3], double *x, double *y, double *z){
     atom->x = *x;
     atom->y = *y;
@@ -21,7 +21,8 @@ void atomset (atom *atom, char element[3], double *x, double *y, double *z){
     strcpy(atom->element, element);
 }
 
-//make sure to allocate atom memory before testing - works correctly
+//finished
+// Purpose: Function should copy the values in atom to locations pointed to by element, x, y, and z
 void atomget (atom *atom, char element[3], double *x, double *y, double *z){
     *x = atom->x;
     *y = atom->y;
@@ -33,12 +34,15 @@ void atomget (atom *atom, char element[3], double *x, double *y, double *z){
 //NOTE: you are not copying atom structures, only the addresses of the atom
 // structures
 //Check for atom values seems to be good - bond atom pointing at the atom
+
+// Purpose: Function should copy the values a1, a2, and epairs into corresponding attributes in bond
 void bondset (bond *bond, atom *a1, atom *a2, unsigned char epairs){
     bond->a1 = a1;
     bond->a2 = a2;
     bond->epairs = epairs;
 }
-// tested!
+// finished
+// Purpose: Function should copy the values in bond to a1, a2, and epairs
 void bondget (bond *bond, atom **a1, atom **a2, unsigned char *epairs){
     *a1 = bond->a1;
     *a2 = bond->a2;
@@ -160,8 +164,12 @@ void molappend_bond (molecule *molecule, bond *bond){
     }
 
      if (molecule->bond_no < molecule->bond_max){
-        bondget(bond, &molecule->bonds->a1, &molecule->bonds->a2, &molecule->bonds->epairs);
-        // bondget(bond, molecule->bonds[molecule->bond_no]);
+        bondget(bond, &molecule->bonds[molecule->bond_no].a1, 
+                &molecule->bonds[molecule->bond_no].a2, 
+                &molecule->bonds[molecule->bond_no].epairs);
+        
+        
+        printf("bond1: a1 - %p, a2 - %p\n",  molecule->bonds->a1, molecule->bonds->a2);
 
         printf("%f\n", molecule->bonds->a1[0].x);
         printf("%s\n", molecule->bonds->a1[0].element);
