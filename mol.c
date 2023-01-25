@@ -113,13 +113,14 @@ void molappend_atom (molecule *molecule, atom *atom){
         // doubles the max
         molecule->atom_max *= 2;
 
-        // reallocs for more memory
-        // atom_ptrs are pointing at the atoms memory
         molecule->atoms = realloc(molecule->atoms, sizeof(struct atom)* molecule->atom_max);
         molecule->atom_ptrs = realloc(molecule->atom_ptrs, sizeof(struct atom*) * molecule->atom_max);
 
-        // NOTE: Do we ever have to worry about reallocing to a smaller number? probably not therefore the
-        // addresses won't change for atoms
+        // if realloc - make sure atom_ptrs point to the new memory locations
+        // append after sorting might be an issue
+        for (int i = 0; i < molecule->atom_no; i++){
+            molecule->atom_ptrs[i] = &molecule->atoms[i];
+        }
     }
 
     if (molecule->atom_no < molecule->atom_max){
@@ -158,22 +159,23 @@ void molappend_bond (molecule *molecule, bond *bond){
         // doubles the max
         molecule->bond_max *= 2;
 
-        // reallocs for more memory
         molecule->bonds = realloc(molecule->bonds, sizeof(struct bond)* molecule->bond_max);
         molecule->bond_ptrs = realloc(molecule->bond_ptrs, sizeof(struct bond*) * molecule->bond_max);
+
+        for (int i = 0; i < molecule->bond_no; i++){
+            molecule->bond_ptrs[i] = &molecule->bonds[i];
+        }
     }
 
      if (molecule->bond_no < molecule->bond_max){
         bondget(bond, &molecule->bonds[molecule->bond_no].a1, 
                 &molecule->bonds[molecule->bond_no].a2, 
                 &molecule->bonds[molecule->bond_no].epairs);
-        
-        
-        printf("bond1: a1 - %p, a2 - %p\n",  molecule->bonds->a1, molecule->bonds->a2);
 
-        printf("%f\n", molecule->bonds->a1[0].x);
-        printf("%s\n", molecule->bonds->a1[0].element);
-        // printf("%f\n", molecule->atoms[1000].x);
+        //test functions
+        printf("%f\n", molecule->bonds[molecule->bond_no].a1[0].x);
+        printf("%s\n", molecule->bonds[molecule->bond_no].a1[0].element);
+        printf("%c\n", molecule->bonds[molecule->bond_no].epairs);
 
         molecule->bond_ptrs[molecule->bond_no] = &molecule->bonds[molecule->bond_no];
         
