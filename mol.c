@@ -69,15 +69,27 @@ molecule *molmalloc (unsigned short atom_max, unsigned short bond_max){
     
     return mol;
 }
-// use molappend to copy the pointers to the new molecule (molmalloc)
+
+// need to test 
 molecule *molcopy (molecule *src){
-    //wait so do we use molmalloc to create a new molecule?
-    
+    // mallocs new molecule
+    molecule *mol_new = molmalloc(src->atom_max, src->bond_max);
 
+    // since molmalloc auto assigns atom_no to 0, we change that
+    mol_new->atom_no = src->atom_no;
+    mol_new->bond_no = src->bond_no;
 
+    // use molappend to add the existing atoms and bonds onto the new mol
+    for (int i = 0; i < src->atom_no; i++){
+        molappend_atom(mol_new, &src->atoms[i]);   
+    }
+
+    for (int i = 0; i < src->bond_no; i++){
+        molappend_bond(mol_new, &src->bonds[i]);
+    }
 }
-// not tested
-// set pointers to NULL afterward
+
+// valgrind works!
 void molfree (molecule *ptr){
     free(ptr->atom_ptrs);
     ptr->atom_ptrs = NULL;
