@@ -68,7 +68,7 @@ molecule *molmalloc (unsigned short atom_max, unsigned short bond_max){
 }
 
 // need to test 
-// bond copied atom pointers wont point at the correct atoms
+// bond copied atom pointers will point to the original molecules 
 molecule *molcopy (molecule *src){
     // mallocs new molecule
     molecule *mol_new = molmalloc(src->atom_max, src->bond_max);
@@ -145,7 +145,7 @@ void molappend_atom (molecule *molecule, atom *atom){
 
         printf("%f\n", molecule->atoms[molecule->atom_no].x);
         printf("%s\n", molecule->atoms[molecule->atom_no].element);
-        // printf("Atom 1000:%f\n", molecule->atoms[10000].x);
+        // printf("%f\n", molecule->atoms[1000].x);
 
         molecule->atom_ptrs[molecule->atom_no] = &molecule->atoms[molecule->atom_no];
         
@@ -200,8 +200,6 @@ void molappend_bond (molecule *molecule, bond *bond){
 void molsort (molecule *molecule){
     // sorted atom_ptrs array
     qsort(molecule->atom_ptrs[0], molecule->atom_no, sizeof(struct atom *), cmpfunc);
-
-    // 
 
 }
 
