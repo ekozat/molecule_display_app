@@ -51,5 +51,6 @@ void zrotation (xform_matrix xform_matrix, unsigned short deg);
 void mol_xform (molecule *molecule, xform_matrix matrix);
 
 // helper functions
-int cmpfunc (const void *a, const void *b);
+int cmpfunc_atom (const void *a, const void *b);
+int cmpfunc_bond (const void *a, const void *b);
 #endif
