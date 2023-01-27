@@ -1,4 +1,5 @@
 #include "mol.h"
+#include <math.h>
 //NOTE: remove exec from Makefile when finished
 
 /*
@@ -197,14 +198,43 @@ void molappend_bond (molecule *molecule, bond *bond){
 
 // should sort atom_ptrs in order of increasing z value
 // also bond_ptrs = take the avg
-void molsort (molecule *molecule){
-
-    //printf("%p", molecule->atom_ptrs);
+void molsort (molecule *molecule)
+{
     // sorted atom_ptrs array
     qsort(molecule->atom_ptrs, molecule->atom_no, sizeof(struct atom *), cmpfunc_atom);
 
     //sort the bonds
     qsort(molecule->bond_ptrs, molecule->bond_no, sizeof(struct bond *), cmpfunc_bond);
+}
+
+void xrotation (xform_matrix xform_matrix, unsigned short deg){
+    double rad = deg * (M_PI / 180.0);
+    double cos_val = cos(rad);
+    double sin_val = sin(rad);
+
+    xform_matrix[0][0] = 1; xform_matrix[0][1] = 0; xform_matrix[0][2] = 0;
+    xform_matrix[1][0] = 0; xform_matrix[1][1] = cos_val; xform_matrix[1][2] = -sin_val;
+    xform_matrix[2][0] = 0; xform_matrix[2][1] = sin_val; xform_matrix[2][2] = cos_val;
+}
+
+void yrotation (xform_matrix xform_matrix, unsigned short deg){
+    double rad = deg * (M_PI / 180.0);
+    double cos_val = cos(rad);
+    double sin_val = sin(rad);
+
+    xform_matrix[0][0] = cos_val; xform_matrix[0][1] = 0; xform_matrix[0][2] = sin_val;
+    xform_matrix[1][0] = 0; xform_matrix[1][1] = 1; xform_matrix[1][2] = 0;
+    xform_matrix[2][0] = -sin_val; xform_matrix[2][1] = 0; xform_matrix[2][2] = cos_val;
+}
+
+void zrotation (xform_matrix xform_matrix, unsigned short deg){
+    double rad = deg * (M_PI / 180.0);
+    double cos_val = cos(rad);
+    double sin_val = sin(rad);
+
+    xform_matrix[0][0] = cos_val; xform_matrix[0][1] = -sin_val; xform_matrix[0][2] = 0;
+    xform_matrix[1][0] = sin_val; xform_matrix[1][1] = cos_val; xform_matrix[1][2] = 0;
+    xform_matrix[2][0] = 0; xform_matrix[2][1] = 0; xform_matrix[2][2] = 1;
 }
 
 // works with test2!
