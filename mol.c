@@ -198,23 +198,45 @@ void molappend_bond (molecule *molecule, bond *bond){
 // should sort atom_ptrs in order of increasing z value
 // also bond_ptrs = take the avg
 void molsort (molecule *molecule){
+
+    //printf("%p", molecule->atom_ptrs);
     // sorted atom_ptrs array
-    qsort(molecule->atom_ptrs[0], molecule->atom_no, sizeof(struct atom *), cmpfunc);
+    qsort(molecule->atom_ptrs, molecule->atom_no, sizeof(struct atom *), cmpfunc_atom);
 
+    //sort the bonds
+    qsort(molecule->bond_ptrs, molecule->bond_no, sizeof(struct bond *), cmpfunc_bond);
 }
 
+// works with test2!
+int cmpfunc_atom (const void *a, const void *b){
+    // we are sorting atom ptrs
+    struct atom *a_atom, *b_atom;
 
-int cmpfunc (const void *a, const void *b){
-    double *double_ptr_l, *double_ptr_r;
+    // We passed in two double pointers because they point to the address of the
+    // the elements in the array, which is a struct atom pointer. We dereference
+    // to get the individual element as a pointer.
+    a_atom = *(struct atom **)a;
+    b_atom = *(struct atom **)b;
 
-    // Get the values at given addresses
-    double_ptr_l = (double *)a;
-    double_ptr_r = (double *)b;
+    // test functions
+    // printf("%f %f\n", a_atom->z, b_atom->z);
+    // printf("%d\n",  (int)(a_atom->z - b_atom->z));
 
-    // return the smaller of the two (must be an int - qsort will fail with a double)
-    // doesn't matter that it's truncation
-    return (int)(*double_ptr_l - *double_ptr_r);
+    // doesn't matter if it truncates
+    return (int)(a_atom->z - b_atom->z);
 }
 
+// works with test2! 
+int cmpfunc_bond (const void *a, const void *b){
+    struct bond *a_bond, *b_bond;
+
+    a_bond = *(struct bond **)a;
+    b_bond = *(struct bond **)b;
+
+    double a_avg = (a_bond->a1->z + a_bond->a2->z) / 2;
+    double b_avg = (b_bond->a1->z + b_bond->a2->z) / 2;
+
+    return (int)(a_avg - b_avg);
+}
 
 
