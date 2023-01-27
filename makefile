@@ -1,17 +1,20 @@
 CC = clang
-CFLAGS = -std=c99 -Wall -pedantic
+CFLAGS = -Wall -std=c99 -pedantic
 
-all: test
+all:  myprog
 
-test: test1.o mol.o
-	$(CC) $^ -o test
-	./test
+clean:  
+	rm -f *.o *.so myprog
 
-test1.o: test1.c mol.h
-	$(CC) $(CFLAGS) -c $<
+libmol.so: mol.o
+	$(CC) mol.o -shared -o $@
 
-mol.o: mol.c mol.h
-	$(CC) $(CFLAGS) -c $<
+mol.o:  mol.c mol.h
+	$(CC) $(CFLAGS) -c $< -fPIC -o $@
 
-clean:
-	rm -f *.o test
+test2.o:  test2.c mol.h
+	$(CC) $(FLAGS) -c $< -o $@
+
+myprog:  test2.o libmol.so
+	$(CC) $< -L. -lmol -o $@
+	./myprog
