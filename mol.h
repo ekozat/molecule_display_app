@@ -4,6 +4,8 @@
 #ifndef _mol_h
 #define _mol_h
 
+#define M_PI 3.14159265358979323846264338
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
