@@ -1,8 +1,12 @@
 test1.c
 test1.o
 test
+test2.c
+test2.o
 mol.o
-makefile (2)
+makefile (personal)
 ptest.c
 ptest.o
-ptest
+libmol.so
+myprog
+exec
