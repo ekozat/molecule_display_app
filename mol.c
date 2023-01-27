@@ -3,12 +3,9 @@
 
 /*
 Questions
-1) malcopy - would we use malmalloc to create a new molecule to copy into
 2) makefile - would we need to put just a main.c file as a target or could we leave in test.c
     - ?
 3) molappend - would we malloc when atom_max or bond_max is equal to 0 or realloc?
-4) Reliable way to test if in memory?
-5) Qsort - use the built in c function? Allowed separate functions from assigned (cmpfunc)
 */
 
 
@@ -71,6 +68,7 @@ molecule *molmalloc (unsigned short atom_max, unsigned short bond_max){
 }
 
 // need to test 
+// bond copied atom pointers wont point at the correct atoms
 molecule *molcopy (molecule *src){
     // mallocs new molecule
     molecule *mol_new = molmalloc(src->atom_max, src->bond_max);
@@ -87,6 +85,8 @@ molecule *molcopy (molecule *src){
     for (int i = 0; i < src->bond_no; i++){
         molappend_bond(mol_new, &src->bonds[i]);
     }
+
+    return mol_new;
 }
 
 // valgrind works!
@@ -145,7 +145,7 @@ void molappend_atom (molecule *molecule, atom *atom){
 
         printf("%f\n", molecule->atoms[molecule->atom_no].x);
         printf("%s\n", molecule->atoms[molecule->atom_no].element);
-        // printf("%f\n", molecule->atoms[1000].x);
+        // printf("Atom 1000:%f\n", molecule->atoms[10000].x);
 
         molecule->atom_ptrs[molecule->atom_no] = &molecule->atoms[molecule->atom_no];
         
@@ -195,9 +195,16 @@ void molappend_bond (molecule *molecule, bond *bond){
     }
 }
 
-void mol_sort (molecule *molecule){
+// should sort atom_ptrs in order of increasing z value
+// also bond_ptrs = take the avg
+void molsort (molecule *molecule){
+    // sorted atom_ptrs array
+    qsort(molecule->atom_ptrs[0], molecule->atom_no, sizeof(struct atom *), cmpfunc);
+
+    // 
 
 }
+
 
 int cmpfunc (const void *a, const void *b){
     double *double_ptr_l, *double_ptr_r;
