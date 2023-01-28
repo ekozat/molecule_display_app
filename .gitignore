@@ -3,6 +3,8 @@ test1.o
 test
 test2.c
 test2.o
+test3.c
+test3.o
 mol.o
 makefile (personal)
 ptest.c
