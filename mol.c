@@ -237,6 +237,14 @@ void zrotation (xform_matrix xform_matrix, unsigned short deg){
     xform_matrix[2][0] = 0; xform_matrix[2][1] = 0; xform_matrix[2][2] = 1;
 }
 
+void mol_xform (molecule *molecule, xform_matrix matrix){
+    for (int i = 0; i < molecule->atom_no; i++){
+        molecule->atoms[i].x = matrix[0][0] * molecule->atoms[i].x + matrix[0][1] * molecule->atoms[i].y + matrix[0][2] * molecule->atoms[i].z;
+        molecule->atoms[i].y = matrix[1][0] * molecule->atoms[i].x + matrix[1][1] * molecule->atoms[i].y + matrix[1][2] * molecule->atoms[i].z;
+        molecule->atoms[i].z = matrix[2][0] * molecule->atoms[i].x + matrix[2][1] * molecule->atoms[i].y + matrix[2][2] * molecule->atoms[i].z;
+    }
+}
+
 // works with test2!
 int cmpfunc_atom (const void *a, const void *b){
     // we are sorting atom ptrs
