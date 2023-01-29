@@ -75,8 +75,8 @@ molecule *molcopy (molecule *src){
     molecule *mol_new = molmalloc(src->atom_max, src->bond_max);
 
     // since molmalloc auto assigns atom_no to 0, we change that
-    mol_new->atom_no = src->atom_no;
-    mol_new->bond_no = src->bond_no;
+    // mol_new->atom_no = src->atom_no;
+    // mol_new->bond_no = src->bond_no;
 
     // use molappend to add the existing atoms and bonds onto the new mol
     for (int i = 0; i < src->atom_no; i++){
@@ -109,6 +109,7 @@ void molfree (molecule *ptr){
 // I don't know how to test this
 // It might be going into bad memory if the sort rearranges stuff
 void molappend_atom (molecule *molecule, atom *atom){
+    printf("atom: %d\n", molecule->atom_no);
     if (molecule->atom_max == 0){
         molecule->atom_max++;
         // should we malloc or no? im assuming we do
@@ -144,8 +145,8 @@ void molappend_atom (molecule *molecule, atom *atom){
                 &(molecule->atoms[molecule->atom_no].y),
                 &(molecule->atoms[molecule->atom_no].z));
 
-        printf("%f\n", molecule->atoms[molecule->atom_no].x);
-        printf("%s\n", molecule->atoms[molecule->atom_no].element);
+        // printf("%f\n", molecule->atoms[molecule->atom_no].x);
+        // printf("%s\n", molecule->atoms[molecule->atom_no].element);
         // printf("%f\n", molecule->atoms[1000].x);
 
         molecule->atom_ptrs[molecule->atom_no] = &molecule->atoms[molecule->atom_no];
@@ -158,6 +159,7 @@ void molappend_atom (molecule *molecule, atom *atom){
 void molappend_bond (molecule *molecule, bond *bond){
     // would we malloc two atoms? Good test case: checking if the amount of atoms makes sense 
     // for the amount of bonds
+    printf("bond: %d\n", molecule->bond_no);
      if (molecule->bond_max == 0){
         molecule->bond_max++;
 
@@ -186,9 +188,9 @@ void molappend_bond (molecule *molecule, bond *bond){
                 &molecule->bonds[molecule->bond_no].epairs);
 
         //test functions
-        printf("%f\n", molecule->bonds[molecule->bond_no].a1[0].x);
-        printf("%s\n", molecule->bonds[molecule->bond_no].a1[0].element);
-        printf("%c\n", molecule->bonds[molecule->bond_no].epairs);
+        // printf("%f\n", molecule->bonds[molecule->bond_no].a1[0].x);
+        // printf("%s\n", molecule->bonds[molecule->bond_no].a1[0].element);
+        // printf("%c\n", molecule->bonds[molecule->bond_no].epairs);
 
         molecule->bond_ptrs[molecule->bond_no] = &molecule->bonds[molecule->bond_no];
         
@@ -215,6 +217,8 @@ void xrotation (xform_matrix xform_matrix, unsigned short deg){
     xform_matrix[0][0] = 1; xform_matrix[0][1] = 0; xform_matrix[0][2] = 0;
     xform_matrix[1][0] = 0; xform_matrix[1][1] = cos_val; xform_matrix[1][2] = -sin_val;
     xform_matrix[2][0] = 0; xform_matrix[2][1] = sin_val; xform_matrix[2][2] = cos_val;
+
+    // printf("%f\n", sin_val);
 }
 
 void yrotation (xform_matrix xform_matrix, unsigned short deg){
@@ -238,10 +242,32 @@ void zrotation (xform_matrix xform_matrix, unsigned short deg){
 }
 
 void mol_xform (molecule *molecule, xform_matrix matrix){
+    double x_vector, y_vector, z_vector;
+
     for (int i = 0; i < molecule->atom_no; i++){
-        molecule->atoms[i].x = matrix[0][0] * molecule->atoms[i].x + matrix[0][1] * molecule->atoms[i].y + matrix[0][2] * molecule->atoms[i].z;
-        molecule->atoms[i].y = matrix[1][0] * molecule->atoms[i].x + matrix[1][1] * molecule->atoms[i].y + matrix[1][2] * molecule->atoms[i].z;
-        molecule->atoms[i].z = matrix[2][0] * molecule->atoms[i].x + matrix[2][1] * molecule->atoms[i].y + matrix[2][2] * molecule->atoms[i].z;
+        x_vector = molecule->atoms[i].x;
+        y_vector = molecule->atoms[i].y;
+        z_vector = molecule->atoms[i].z;
+
+        // printf("%f ", molecule->atoms[i].x);
+        // printf("%f ", matrix[2][0]);
+        // printf("%f ,", molecule->atoms[i].x * matrix[2][0]);
+
+        // printf("%f ", molecule->atoms[i].y);
+        // printf("%f ", matrix[2][1]);
+        // printf("%f ,", molecule->atoms[i].y * matrix[2][1]);
+
+        // printf("%f ", molecule->atoms[i].z);
+        // printf("%f ", matrix[2][2]);
+        // printf("%f ,", molecule->atoms[i].z * matrix[2][2]);
+
+        molecule->atoms[i].x = matrix[0][0] * x_vector + matrix[0][1] * y_vector + matrix[0][2] * z_vector;
+        molecule->atoms[i].y = matrix[1][0] * x_vector + matrix[1][1] * y_vector + matrix[1][2] * z_vector;
+        molecule->atoms[i].z = matrix[2][0] * x_vector + matrix[2][1] * y_vector + matrix[2][2] * z_vector;
+
+        // printf("%f ", matrix[2][0] * molecule->atoms[i].x + matrix[2][1] * molecule->atoms[i].y + matrix[2][2] * molecule->atoms[i].z);
+        // printf("%f\n",  molecule->atoms[i].z);
+
     }
 }
 
