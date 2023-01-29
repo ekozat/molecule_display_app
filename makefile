@@ -10,11 +10,11 @@ libmol.so: mol.o
 	$(CC) mol.o -shared -o $@
 
 mol.o:  mol.c mol.h
-	$(CC) $(CFLAGS) -c $< -fPIC -o $@
+	$(CC) $(CFLAGS) -c $< -fPIC -o $@ 
 
-test2.o:  test2.c mol.h
+test3.o:  test3.c mol.h
 	$(CC) $(FLAGS) -c $< -o $@
 
-myprog:  test2.o libmol.so
-	$(CC) $< -L. -lmol -o $@
+myprog:  test3.o libmol.so
+	$(CC) $< -L. -lmol -lm -o $@
 	./myprog
