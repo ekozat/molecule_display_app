@@ -2,15 +2,6 @@
 #include <math.h>
 //NOTE: remove exec from Makefile when finished
 
-/*
-Questions
-2) makefile - would we need to put just a main.c file as a target or could we leave in test.c
-    - ?
-3) molappend - would we malloc when atom_max or bond_max is equal to 0 or realloc?
-*/
-
-
-// finished
 // Purpose: Function should copy the values pointed to by element, x, y, and z into atom
 void atomset (atom *atom, char element[3], double *x, double *y, double *z){
     atom->x = *x;
@@ -19,7 +10,6 @@ void atomset (atom *atom, char element[3], double *x, double *y, double *z){
     strcpy(atom->element, element);
 }
 
-//finished
 // Purpose: Function should copy the values in atom to locations pointed to by element, x, y, and z
 void atomget (atom *atom, char element[3], double *x, double *y, double *z){
     
@@ -33,20 +23,14 @@ void atomget (atom *atom, char element[3], double *x, double *y, double *z){
     strcpy(element, atom->element);
 }
 
-//should it be a deep copy? - test if bond 2 changes if you make changes to bond 1
-//NOTE: you are not copying atom structures, only the addresses of the atom
-// structures
-//Check for atom values seems to be good - bond atom pointing at the atom
-
 // Purpose: Function should copy the values a1, a2, and epairs into corresponding attributes in bond
 void bondset (bond *bond, atom *a1, atom *a2, unsigned char epairs){
     bond->a1 = a1;
     bond->a2 = a2;
     bond->epairs = epairs;
 }
-// finished
-// Purpose: Function should copy the values in bond to a1, a2, and epairs
-// double pointers because passed by reference
+
+// Purpose: Function should copy the atom addresses in bond to a1, a2, and epairs
 void bondget (bond *bond, atom **a1, atom **a2, unsigned char *epairs){
     
     if (bond == NULL){
@@ -58,20 +42,19 @@ void bondget (bond *bond, atom **a1, atom **a2, unsigned char *epairs){
     *epairs = bond->epairs;
 }
 
-// need to test
+// Purpose: Assigning memory for the new molecule and all attributes/structs belonging to it
 molecule *molmalloc (unsigned short atom_max, unsigned short bond_max){
-    //assign memory for molecule struct
+    
     molecule *mol = malloc(sizeof(struct molecule));
     if (mol == NULL){
         return NULL;
     }
 
-    //atom array (holding all atom values)
     mol->atoms = malloc(sizeof(struct atom)* atom_max);
     if (mol->atoms == NULL){
         return NULL;
     }
-    //atom pointer array (pointing to atom pointer to each element from the bond array)
+
     mol->atom_ptrs = malloc(sizeof(struct atom*) * atom_max);
     if (mol->atom_ptrs == NULL){
         return NULL;
@@ -95,8 +78,7 @@ molecule *molmalloc (unsigned short atom_max, unsigned short bond_max){
     return mol;
 }
 
-// need to test 
-// bond copied atom pointers will point to the original molecules 
+// Purpose: Copying an existing molecule into a new molecule - with existing atoms and bonds added
 molecule *molcopy (molecule *src){
 
     if (src == NULL){
@@ -105,10 +87,6 @@ molecule *molcopy (molecule *src){
 
     // mallocs new molecule
     molecule *mol_new = molmalloc(src->atom_max, src->bond_max);
-
-    // since molmalloc auto assigns atom_no to 0, we change that
-    // mol_new->atom_no = src->atom_no;
-    // mol_new->bond_no = src->bond_no;
 
     // use molappend to add the existing atoms and bonds onto the new mol
     for (int i = 0; i < src->atom_no; i++){
@@ -122,7 +100,7 @@ molecule *molcopy (molecule *src){
     return mol_new;
 }
 
-// valgrind works!
+// Purpose: free all memory from the molecule
 void molfree (molecule *ptr){
     free(ptr->atom_ptrs);
     ptr->atom_ptrs = NULL;
@@ -138,21 +116,18 @@ void molfree (molecule *ptr){
 
     free(ptr);
 }
-// I don't know how to test this
-// It might be going into bad memory if the sort rearranges stuff
+
+// Purpose: A new atom gets appended to the array of atoms existing within the molecule
 void molappend_atom (molecule *molecule, atom *atom){
 
     if (molecule == NULL || atom == NULL){
         return;
     }
 
+    // if the atom_max is 0, increase to 1 and malloc space for one atom
     if (molecule->atom_max == 0){
         molecule->atom_max++;
-        // should we malloc or no? im assuming we do
-        // wait but what if we can molappend_atom and then molmalloc - realloc?
-        // ^no, cause we can't call molmalloc with the same molecule
 
-        // Check pointer address - malloc will come back as NULL if it errors
         molecule->atoms = malloc(sizeof(struct atom)* molecule->atom_max);
         if (molecule->atoms == NULL){
             return;
@@ -164,9 +139,9 @@ void molappend_atom (molecule *molecule, atom *atom){
         }
     }
 
-    // have to test the realloc 
-    // reallocs, then adds the atom in the next if
+    // if there is no space to add a new atom, expand the memory of the array
     if (molecule->atom_no == molecule->atom_max){
+
         // doubles the max
         molecule->atom_max *= 2;
 
@@ -180,44 +155,39 @@ void molappend_atom (molecule *molecule, atom *atom){
             return;
         }
 
-        // if realloc - make sure atom_ptrs point to the new memory locations
-        // append after sorting might be an issue
+        // assign atom_ptrs point to the new memory locations of the atoms
         for (int i = 0; i < molecule->atom_no; i++){
             molecule->atom_ptrs[i] = &molecule->atoms[i];
         }
     }
 
+    // add the atom
     if (molecule->atom_no < molecule->atom_max){
-        // put values from passed in atom into the atom stored in molecule
-        // check if its actual empty space as well
+
         atomget(atom, molecule->atoms[molecule->atom_no].element, 
                 &(molecule->atoms[molecule->atom_no].x),
                 &(molecule->atoms[molecule->atom_no].y),
                 &(molecule->atoms[molecule->atom_no].z));
 
-        // printf("%f\n", molecule->atoms[molecule->atom_no].x);
-        // printf("%s\n", molecule->atoms[molecule->atom_no].element);
-        // printf("%f\n", molecule->atoms[1000].x);
-
+        // assign the atom pointers to the atoms
         molecule->atom_ptrs[molecule->atom_no] = &molecule->atoms[molecule->atom_no];
         
+        // since we added an atom to the array, increase total atom number
         molecule->atom_no++;
     }
 }
-// is it any different for bonds?
-// more complicated because of the atom pointers
+
+// Purpose: A new bond gets appended to the array of bonds existing within the molecule
 void molappend_bond (molecule *molecule, bond *bond){
-    // would we malloc two atoms? Good test case: checking if the amount of atoms makes sense 
-    // for the amount of bonds
+
     if (molecule == NULL || bond == NULL){
         return;
     }
 
-
+    // if the bond_max is 0, increase to 1 and malloc space for one bond
     if (molecule->bond_max == 0){
         molecule->bond_max++;
 
-        // Check pointer address - malloc will come back as NULL if it errors
         molecule->bonds = malloc(sizeof(struct bond)* molecule->bond_max);
         if (molecule->bonds == NULL){
             return;
@@ -229,9 +199,9 @@ void molappend_bond (molecule *molecule, bond *bond){
         }
     }
     
-    // have to test the realloc 
-    // reallocs, then adds the atom in the next if
+    // if there is no space to add a new bond, expand the memory of the array
     if (molecule->bond_no == molecule->bond_max){
+
         // doubles the max
         molecule->bond_max *= 2;
 
@@ -250,15 +220,11 @@ void molappend_bond (molecule *molecule, bond *bond){
         }
     }
 
-     if (molecule->bond_no < molecule->bond_max){
+    // add bond
+    if (molecule->bond_no < molecule->bond_max){
         bondget(bond, &molecule->bonds[molecule->bond_no].a1, 
                 &molecule->bonds[molecule->bond_no].a2, 
                 &molecule->bonds[molecule->bond_no].epairs);
-
-        //test functions
-        // printf("%f\n", molecule->bonds[molecule->bond_no].a1[0].x);
-        // printf("%s\n", molecule->bonds[molecule->bond_no].a1[0].element);
-        // printf("%c\n", molecule->bonds[molecule->bond_no].epairs);
 
         molecule->bond_ptrs[molecule->bond_no] = &molecule->bonds[molecule->bond_no];
         
@@ -266,8 +232,8 @@ void molappend_bond (molecule *molecule, bond *bond){
     }
 }
 
-// should sort atom_ptrs in order of increasing z value
-// also bond_ptrs = take the avg
+// Purpose: Should sort both atom_ptrs and bond_ptrs in order of increasing z value.
+// Bond_ptrs will take the average of their two atoms' z value.
 void molsort (molecule *molecule)
 {
     if (molecule == NULL){
@@ -277,10 +243,11 @@ void molsort (molecule *molecule)
     // sorted atom_ptrs array
     qsort(molecule->atom_ptrs, molecule->atom_no, sizeof(struct atom *), cmpfunc_atom);
 
-    //sort the bonds
+    //sort the bond_ptrs
     qsort(molecule->bond_ptrs, molecule->bond_no, sizeof(struct bond *), cmpfunc_bond);
 }
 
+// Purpose: Assigns the x transformation matrix
 void xrotation (xform_matrix xform_matrix, unsigned short deg){
     double rad = deg * (M_PI / 180.0);
     double cos_val = cos(rad);
@@ -289,10 +256,9 @@ void xrotation (xform_matrix xform_matrix, unsigned short deg){
     xform_matrix[0][0] = 1; xform_matrix[0][1] = 0; xform_matrix[0][2] = 0;
     xform_matrix[1][0] = 0; xform_matrix[1][1] = cos_val; xform_matrix[1][2] = -sin_val;
     xform_matrix[2][0] = 0; xform_matrix[2][1] = sin_val; xform_matrix[2][2] = cos_val;
-
-    // printf("%f\n", sin_val);
 }
 
+// Purpose: Assigns the y transformation matrix
 void yrotation (xform_matrix xform_matrix, unsigned short deg){
     double rad = deg * (M_PI / 180.0);
     double cos_val = cos(rad);
@@ -303,6 +269,7 @@ void yrotation (xform_matrix xform_matrix, unsigned short deg){
     xform_matrix[2][0] = -sin_val; xform_matrix[2][1] = 0; xform_matrix[2][2] = cos_val;
 }
 
+// Purpose: Assigns the z transformation matrix
 void zrotation (xform_matrix xform_matrix, unsigned short deg){
     double rad = deg * (M_PI / 180.0);
     double cos_val = cos(rad);
@@ -313,6 +280,7 @@ void zrotation (xform_matrix xform_matrix, unsigned short deg){
     xform_matrix[2][0] = 0; xform_matrix[2][1] = 0; xform_matrix[2][2] = 1;
 }
 
+// Purpose: perform matrix multiplication to the atom vectors, implementing rotation
 void mol_xform (molecule *molecule, xform_matrix matrix){
 
     if (molecule == NULL){
@@ -322,35 +290,19 @@ void mol_xform (molecule *molecule, xform_matrix matrix){
     double x_vector, y_vector, z_vector;
 
     for (int i = 0; i < molecule->atom_no; i++){
+        // store in separate variable to avoid reassignment during calculation
         x_vector = molecule->atoms[i].x;
         y_vector = molecule->atoms[i].y;
         z_vector = molecule->atoms[i].z;
-
-        // printf("%f ", molecule->atoms[i].x);
-        // printf("%f ", matrix[2][0]);
-        // printf("%f ,", molecule->atoms[i].x * matrix[2][0]);
-
-        // printf("%f ", molecule->atoms[i].y);
-        // printf("%f ", matrix[2][1]);
-        // printf("%f ,", molecule->atoms[i].y * matrix[2][1]);
-
-        // printf("%f ", molecule->atoms[i].z);
-        // printf("%f ", matrix[2][2]);
-        // printf("%f ,", molecule->atoms[i].z * matrix[2][2]);
 
         molecule->atoms[i].x = matrix[0][0] * x_vector + matrix[0][1] * y_vector + matrix[0][2] * z_vector;
         molecule->atoms[i].y = matrix[1][0] * x_vector + matrix[1][1] * y_vector + matrix[1][2] * z_vector;
         molecule->atoms[i].z = matrix[2][0] * x_vector + matrix[2][1] * y_vector + matrix[2][2] * z_vector;
 
-        // printf("%f ", matrix[2][0] * molecule->atoms[i].x + matrix[2][1] * molecule->atoms[i].y + matrix[2][2] * molecule->atoms[i].z);
-        // printf("%f\n",  molecule->atoms[i].z);
-
     }
 }
 
-// works with test2!
 int cmpfunc_atom (const void *a, const void *b){
-    // we are sorting atom ptrs
     struct atom *a_atom, *b_atom;
 
     // We passed in two double pointers because they point to the address of the
@@ -359,11 +311,6 @@ int cmpfunc_atom (const void *a, const void *b){
     a_atom = *(struct atom **)a;
     b_atom = *(struct atom **)b;
 
-    // test functions
-    // printf("%f %f\n", a_atom->z, b_atom->z);
-    // printf("%d\n",  (int)(a_atom->z - b_atom->z));
-
-    // doesn't matter if it truncates
     return (int)(a_atom->z - b_atom->z);
 }
 
