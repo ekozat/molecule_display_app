@@ -22,6 +22,11 @@ void atomset (atom *atom, char element[3], double *x, double *y, double *z){
 //finished
 // Purpose: Function should copy the values in atom to locations pointed to by element, x, y, and z
 void atomget (atom *atom, char element[3], double *x, double *y, double *z){
+    
+    if (atom == NULL){
+        return;
+    }
+
     *x = atom->x;
     *y = atom->y;
     *z = atom->z;
@@ -41,7 +46,13 @@ void bondset (bond *bond, atom *a1, atom *a2, unsigned char epairs){
 }
 // finished
 // Purpose: Function should copy the values in bond to a1, a2, and epairs
+// double pointers because passed by reference
 void bondget (bond *bond, atom **a1, atom **a2, unsigned char *epairs){
+    
+    if (bond == NULL){
+        return;
+    }
+
     *a1 = bond->a1;
     *a2 = bond->a2;
     *epairs = bond->epairs;
@@ -51,14 +62,30 @@ void bondget (bond *bond, atom **a1, atom **a2, unsigned char *epairs){
 molecule *molmalloc (unsigned short atom_max, unsigned short bond_max){
     //assign memory for molecule struct
     molecule *mol = malloc(sizeof(struct molecule));
+    if (mol == NULL){
+        return NULL;
+    }
 
     //atom array (holding all atom values)
     mol->atoms = malloc(sizeof(struct atom)* atom_max);
+    if (mol->atoms == NULL){
+        return NULL;
+    }
     //atom pointer array (pointing to atom pointer to each element from the bond array)
     mol->atom_ptrs = malloc(sizeof(struct atom*) * atom_max);
+    if (mol->atom_ptrs == NULL){
+        return NULL;
+    }
 
     mol->bonds = malloc(sizeof(struct bond) * bond_max);
+    if (mol->bonds == NULL){
+        return NULL;
+    }
+
     mol->bond_ptrs = malloc(sizeof(struct bond*) * bond_max);
+    if (mol->bond_ptrs == NULL){
+        return NULL;
+    }
 
     mol->atom_max = atom_max;
     mol->atom_no = 0;
@@ -71,6 +98,11 @@ molecule *molmalloc (unsigned short atom_max, unsigned short bond_max){
 // need to test 
 // bond copied atom pointers will point to the original molecules 
 molecule *molcopy (molecule *src){
+
+    if (src == NULL){
+        return NULL;
+    }
+
     // mallocs new molecule
     molecule *mol_new = molmalloc(src->atom_max, src->bond_max);
 
@@ -109,7 +141,11 @@ void molfree (molecule *ptr){
 // I don't know how to test this
 // It might be going into bad memory if the sort rearranges stuff
 void molappend_atom (molecule *molecule, atom *atom){
-    printf("atom: %d\n", molecule->atom_no);
+
+    if (molecule == NULL || atom == NULL){
+        return;
+    }
+
     if (molecule->atom_max == 0){
         molecule->atom_max++;
         // should we malloc or no? im assuming we do
@@ -118,7 +154,14 @@ void molappend_atom (molecule *molecule, atom *atom){
 
         // Check pointer address - malloc will come back as NULL if it errors
         molecule->atoms = malloc(sizeof(struct atom)* molecule->atom_max);
+        if (molecule->atoms == NULL){
+            return;
+        }
+
         molecule->atom_ptrs = malloc(sizeof(struct atom*) * molecule->atom_max);
+        if (molecule->atom_ptrs == NULL){
+            return;
+        }
     }
 
     // have to test the realloc 
@@ -128,7 +171,14 @@ void molappend_atom (molecule *molecule, atom *atom){
         molecule->atom_max *= 2;
 
         molecule->atoms = realloc(molecule->atoms, sizeof(struct atom)* molecule->atom_max);
+        if (molecule->atoms == NULL){
+            return;
+        }
+
         molecule->atom_ptrs = realloc(molecule->atom_ptrs, sizeof(struct atom*) * molecule->atom_max);
+        if (molecule->atom_ptrs == NULL){
+            return;
+        }
 
         // if realloc - make sure atom_ptrs point to the new memory locations
         // append after sorting might be an issue
@@ -159,13 +209,24 @@ void molappend_atom (molecule *molecule, atom *atom){
 void molappend_bond (molecule *molecule, bond *bond){
     // would we malloc two atoms? Good test case: checking if the amount of atoms makes sense 
     // for the amount of bonds
-    printf("bond: %d\n", molecule->bond_no);
-     if (molecule->bond_max == 0){
+    if (molecule == NULL || bond == NULL){
+        return;
+    }
+
+
+    if (molecule->bond_max == 0){
         molecule->bond_max++;
 
         // Check pointer address - malloc will come back as NULL if it errors
         molecule->bonds = malloc(sizeof(struct bond)* molecule->bond_max);
+        if (molecule->bonds == NULL){
+            return;
+        }
+
         molecule->bond_ptrs = malloc(sizeof(struct bond*) * molecule->bond_max);
+        if (molecule->bond_ptrs == NULL){
+            return;
+        }
     }
     
     // have to test the realloc 
@@ -175,7 +236,14 @@ void molappend_bond (molecule *molecule, bond *bond){
         molecule->bond_max *= 2;
 
         molecule->bonds = realloc(molecule->bonds, sizeof(struct bond)* molecule->bond_max);
+        if (molecule->bonds == NULL){
+            return;
+        }
+
         molecule->bond_ptrs = realloc(molecule->bond_ptrs, sizeof(struct bond*) * molecule->bond_max);
+        if (molecule->bond_ptrs == NULL){
+            return;
+        }
 
         for (int i = 0; i < molecule->bond_no; i++){
             molecule->bond_ptrs[i] = &molecule->bonds[i];
@@ -202,6 +270,10 @@ void molappend_bond (molecule *molecule, bond *bond){
 // also bond_ptrs = take the avg
 void molsort (molecule *molecule)
 {
+    if (molecule == NULL){
+        return;
+    }
+
     // sorted atom_ptrs array
     qsort(molecule->atom_ptrs, molecule->atom_no, sizeof(struct atom *), cmpfunc_atom);
 
@@ -242,6 +314,11 @@ void zrotation (xform_matrix xform_matrix, unsigned short deg){
 }
 
 void mol_xform (molecule *molecule, xform_matrix matrix){
+
+    if (molecule == NULL){
+        return;
+    }
+
     double x_vector, y_vector, z_vector;
 
     for (int i = 0; i < molecule->atom_no; i++){
