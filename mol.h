@@ -1,6 +1,15 @@
-//asks if _mol_h is defined. If not defined, executes everything if statement (the entire header file)
-//if already defined, doesn't enter the if statement and exits. Ensures that the same header file doesn't get 
-//stored in memory twice. Happens in nested header files
+/*
+ Student Name: Emily Kozatchiner
+ Student ID: 1149665
+ Due Date: Jan 30, 2023
+ Course: CIS*2750
+ I have exclusive control over this submission via my password.
+ By including this header comment, I certify that I have read and understood 
+ the policy on academic integrity. I assert that this work is my own. 
+ I have appropriate acknowledged any and all material that I have used, 
+ be it directly quoted or paraphrased. Furthermore, I certify that this 
+ assignment was written by me in its entirety.
+*/
 #ifndef _mol_h
 #define _mol_h
 
@@ -10,22 +19,21 @@
 #include <stdlib.h>
 #include <string.h>
 
-//describes an atom and its position
+// describes an atom and its position
 typedef struct atom
 {
-    char element[3]; //element name
-    double x, y, z; //position
+    char element[3];
+    double x, y, z; 
 }atom;
 
-//describes covalent bond b/w 2 atoms
-//NOTE: no need to free a1, a2
+// describes covalent bond between two atoms
 typedef struct bond
 {
-    atom *a1, *a2; //Bond between the two atoms
+    atom *a1, *a2;
     unsigned char epairs; //number of electron pairs
 }bond;
 
-//represents molecule holding 0+ atoms and 0+ bonds
+// represents molecule holding 0+ atoms and 0+ bonds
 typedef struct molecule 
 {
     unsigned short atom_max, atom_no; 
@@ -34,9 +42,10 @@ typedef struct molecule
     bond *bonds, **bond_ptrs;
 }molecule;
 
+// transformation matrix for molecule rotation
 typedef double xform_matrix[3][3];
 
-//FUNCTIONS
+// Functions
 void atomset (atom *atom, char element[3], double *x, double *y, double *z);
 void atomget (atom *atom, char element[3], double *x, double *y, double *z);
 void bondset (bond *bond, atom *a1, atom *a2, unsigned char epairs);
@@ -52,7 +61,7 @@ void yrotation (xform_matrix xform_matrix, unsigned short deg);
 void zrotation (xform_matrix xform_matrix, unsigned short deg);
 void mol_xform (molecule *molecule, xform_matrix matrix);
 
-// helper functions
+// Helper functions
 int cmpfunc_atom (const void *a, const void *b);
 int cmpfunc_bond (const void *a, const void *b);
 #endif
