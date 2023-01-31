@@ -10,6 +10,11 @@
  be it directly quoted or paraphrased. Furthermore, I certify that this 
  assignment was written by me in its entirety.
 */
+
+// Before compiling, please execute: export LD_LIBRARY_PATH=.
+// Compilation: make
+// Running: ./myprog
+
 #ifndef _mol_h
 #define _mol_h
 
