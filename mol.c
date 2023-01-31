@@ -311,7 +311,7 @@ int cmpfunc_atom (const void *a, const void *b){
     a_atom = *(struct atom **)a;
     b_atom = *(struct atom **)b;
 
-    return (int)(a_atom->z - b_atom->z);
+    return (int)((a_atom->z > b_atom->z) - (a_atom->z < b_atom->z));
 }
 
 // works with test2! 
@@ -324,7 +324,7 @@ int cmpfunc_bond (const void *a, const void *b){
     double a_avg = (a_bond->a1->z + a_bond->a2->z) / 2;
     double b_avg = (b_bond->a1->z + b_bond->a2->z) / 2;
 
-    return (int)(a_avg - b_avg);
+    return (int)((a_avg > b_avg) - (a_avg < b_avg));
 }
 
 
