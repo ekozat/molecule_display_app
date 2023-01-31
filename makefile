@@ -17,4 +17,3 @@ test3.o:  test3.c mol.h
 
 myprog:  test3.o libmol.so
 	$(CC) $< -L. -lmol -lm -o $@
-	./myprog
