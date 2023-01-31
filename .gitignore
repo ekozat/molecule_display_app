@@ -5,6 +5,10 @@ test2.c
 test2.o
 test3.c
 test3.o
+test6.c
+test6.o
+indeTest.c
+indeTest.o
 mol.o
 makefile (personal)
 ptest.c
