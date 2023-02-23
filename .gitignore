@@ -7,12 +7,7 @@ test3.c
 test3.o
 test6.c
 test6.o
-indeTest.c
-indeTest.o
-mol.o
-makefile (personal)
-ptest.c
-ptest.o
 libmol.so
 myprog
-exec
+Grades.txt
+GradingLog.txt
