@@ -111,6 +111,10 @@ void molfree (molecule *ptr){
     free(ptr->bond_ptrs);
     ptr->bond_ptrs = NULL;
 
+    // free bond atom pointers
+    free(ptr->bonds->a1);
+    free(ptr->bonds->a2);
+
     free(ptr->bonds);
     ptr->bonds = NULL;
 
