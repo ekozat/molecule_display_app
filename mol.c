@@ -244,7 +244,8 @@ void molappend_bond (molecule *molecule, bond *bond){
     // add bond
     if (molecule->bond_no < molecule->bond_max){
         bondget(bond, &molecule->bonds[molecule->bond_no].a1, 
-                &molecule->bonds[molecule->bond_no].a2, 
+                &molecule->bonds[molecule->bond_no].a2,
+                &molecule->bonds[molecule->bond_no].atoms, 
                 &molecule->bonds[molecule->bond_no].epairs);
 
         molecule->bond_ptrs[molecule->bond_no] = &molecule->bonds[molecule->bond_no];
