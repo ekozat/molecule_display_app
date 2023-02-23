@@ -24,15 +24,34 @@ void atomget (atom *atom, char element[3], double *x, double *y, double *z){
 }
 
 // Purpose: Function should copy the values a1, a2, and epairs into corresponding attributes in bond
-void bondset (bond *bond, atom *a1, atom *a2, unsigned char epairs){
-    bond->a1 = a1;
-    bond->a2 = a2;
-    bond->epairs = epairs;
+// Changes: Function should copy paramater values into bond
+// void bondset (bond *bond, atom *a1, atom *a2, unsigned char epairs){
+//     bond->a1 = a1;
+//     bond->a2 = a2;
+//     bond->epairs = epairs;
+// }
+void bondset(bond *bond, unsigned short *a1, unsigned short *a2, atom **atoms, unsigned char *epairs){
+    bond->a1 = *a1;
+    bond->a2 = *a2;
+    bond->epairs = *epairs;
+
+    bond->atoms = *atoms;
 }
 
 // Purpose: Function should copy the atom addresses in bond to a1, a2, and epairs
-void bondget (bond *bond, atom **a1, atom **a2, unsigned char *epairs){
+// Changes: Function should copy attributes in bond to parameters
+// void bondget (bond *bond, atom **a1, atom **a2, unsigned char *epairs){
     
+//     if (bond == NULL){
+//         return;
+//     }
+
+//     *a1 = bond->a1;
+//     *a2 = bond->a2;
+//     *epairs = bond->epairs;
+// }
+void bondget(bond *bond, unsigned short *a1, unsigned short *a2, atom **atoms, unsigned char *epairs){
+
     if (bond == NULL){
         return;
     }
@@ -40,7 +59,9 @@ void bondget (bond *bond, atom **a1, atom **a2, unsigned char *epairs){
     *a1 = bond->a1;
     *a2 = bond->a2;
     *epairs = bond->epairs;
+    *atoms = bond->atoms;
 }
+
 
 // Purpose: Assigning memory for the new molecule and all attributes/structs belonging to it
 molecule *molmalloc (unsigned short atom_max, unsigned short bond_max){
