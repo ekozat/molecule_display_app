@@ -36,6 +36,9 @@ void bondset(bond *bond, unsigned short *a1, unsigned short *a2, atom **atoms, u
     bond->epairs = *epairs;
 
     bond->atoms = *atoms;
+    //printf("%f", bond->atoms[0].y);
+
+    compute_coords(bond);
 }
 
 // Purpose: Function should copy the atom addresses in bond to a1, a2, and epairs
