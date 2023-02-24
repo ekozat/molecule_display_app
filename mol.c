@@ -339,15 +339,33 @@ int cmpfunc_atom (const void *a, const void *b){
 
 // works with test2! 
 int cmpfunc_bond (const void *a, const void *b){
-    struct bond *a_bond, *b_bond;
+    // struct bond *a_bond, *b_bond;
 
-    a_bond = *(struct bond **)a;
-    b_bond = *(struct bond **)b;
+    // a_bond = *(struct bond **)a;
+    // b_bond = *(struct bond **)b;
 
-    double a_avg = (a_bond->a1->z + a_bond->a2->z) / 2;
-    double b_avg = (b_bond->a1->z + b_bond->a2->z) / 2;
+    // double a_avg = (a_bond->a1->z + a_bond->a2->z) / 2;
+    // double b_avg = (b_bond->a1->z + b_bond->a2->z) / 2;
 
-    return (int)((a_avg > b_avg) - (a_avg < b_avg));
+    // return (int)((a_avg > b_avg) - (a_avg < b_avg));
+}
+
+// should compute all coordinate values
+// Q: can atoms array have more than two values?
+void compute_coords(bond *bond){
+    bond->x1 = bond->atoms[0].x;
+    //printf("%f", bond->x1);
+    bond->x2 = bond->atoms[1].x;
+
+    bond->y1 = bond->atoms[0].y;
+    bond->y2 = bond->atoms[1].y;
+
+    bond->z = (bond->atoms[0].z + bond->atoms[1].z) / 2;
+
+    bond->len = sqrt(pow(bond->x2 - bond->x1, 2) + pow(bond->y2 - bond->y1, 2));
+
+    bond->dx = (bond->x2 - bond->x1) / bond->len;
+    bond->dy = (bond->y2 - bond->y1) / bond->len;
 }
 
 
