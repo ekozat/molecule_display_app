@@ -60,7 +60,9 @@ void bondget(bond *bond, unsigned short *a1, unsigned short *a2, atom **atoms, u
     }
 
     *a1 = bond->a1;
+    printf("%hu\n", bond->a1);
     *a2 = bond->a2;
+    printf("%hu\n", *a2);
     *epairs = bond->epairs;
     *atoms = bond->atoms;
 }
@@ -187,7 +189,8 @@ void molappend_atom (molecule *molecule, atom *atom){
 
     // add the atom
     if (molecule->atom_no < molecule->atom_max){
-
+        
+        //switch to atomset and test with A1 as well
         atomget(atom, molecule->atoms[molecule->atom_no].element, 
                 &(molecule->atoms[molecule->atom_no].x),
                 &(molecule->atoms[molecule->atom_no].y),
@@ -339,15 +342,12 @@ int cmpfunc_atom (const void *a, const void *b){
 
 // works with test2! 
 int cmpfunc_bond (const void *a, const void *b){
-    // struct bond *a_bond, *b_bond;
+    struct bond *a_bond, *b_bond;
 
-    // a_bond = *(struct bond **)a;
-    // b_bond = *(struct bond **)b;
+    a_bond = *(struct bond **)a;
+    b_bond = *(struct bond **)b;
 
-    // double a_avg = (a_bond->a1->z + a_bond->a2->z) / 2;
-    // double b_avg = (b_bond->a1->z + b_bond->a2->z) / 2;
-
-    // return (int)((a_avg > b_avg) - (a_avg < b_avg));
+    return (int)((a_bond->z > b_bond->z) - (a_bond->z < b_bond->z));
 }
 
 // should compute all coordinate values
