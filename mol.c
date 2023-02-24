@@ -191,10 +191,8 @@ void molappend_atom (molecule *molecule, atom *atom){
     if (molecule->atom_no < molecule->atom_max){
         
         //switch to atomset and test with A1 as well
-        atomget(atom, molecule->atoms[molecule->atom_no].element, 
-                &(molecule->atoms[molecule->atom_no].x),
-                &(molecule->atoms[molecule->atom_no].y),
-                &(molecule->atoms[molecule->atom_no].z));
+        atomset(&molecule->atoms[molecule->atom_no], atom->element,
+                &atom->x, &atom->y, &atom->z);
 
         // assign the atom pointers to the atoms
         molecule->atom_ptrs[molecule->atom_no] = &molecule->atoms[molecule->atom_no];
