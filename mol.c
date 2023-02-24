@@ -313,6 +313,11 @@ void mol_xform (molecule *molecule, xform_matrix matrix){
         return;
     }
 
+    // apply compute_coords to each bond in the molecule
+    for (int i = 0; i < molecule->bond_no; i++){
+        compute_coords(&molecule->bonds[i]);
+    }
+
     double x_vector, y_vector, z_vector;
 
     for (int i = 0; i < molecule->atom_no; i++){
