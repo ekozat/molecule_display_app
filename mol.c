@@ -118,7 +118,7 @@ molecule *molcopy (molecule *src){
     for (int i = 0; i < src->atom_no; i++){
         molappend_atom(mol_new, &src->atoms[i]);   
     }
-
+    
     for (int i = 0; i < src->bond_no; i++){
         molappend_bond(mol_new, &src->bonds[i]);
     }
@@ -247,8 +247,9 @@ void molappend_bond (molecule *molecule, bond *bond){
 
     // add bond
     if (molecule->bond_no < molecule->bond_max){
+        // call with the molecule atoms to get bond atoms array to point to it
         bondset(&molecule->bonds[molecule->bond_no], &bond->a1, &bond->a2,
-                &bond->atoms, &bond->epairs);
+                &molecule->atoms, &bond->epairs);
 
         molecule->bond_ptrs[molecule->bond_no] = &molecule->bonds[molecule->bond_no];
         
