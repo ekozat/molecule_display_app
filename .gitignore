@@ -11,5 +11,8 @@ molecule_wrap.c
 molecule_wrap.o
 _molecule.so
 molecule.py
+molecule.pyc
+makefile (1)
+__pycache__
 testPart2.py
 README.md
