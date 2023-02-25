@@ -357,14 +357,14 @@ int cmpfunc_bond (const void *a, const void *b){
 // should compute all coordinate values
 // Q: can atoms array have more than two values?
 void compute_coords(bond *bond){
-    bond->x1 = bond->atoms[0].x;
+    bond->x1 = bond->atoms[bond->a1].x;
     //printf("%f", bond->x1);
-    bond->x2 = bond->atoms[1].x;
+    bond->x2 = bond->atoms[bond->a2].x;
 
-    bond->y1 = bond->atoms[0].y;
-    bond->y2 = bond->atoms[1].y;
+    bond->y1 = bond->atoms[bond->a1].y;
+    bond->y2 = bond->atoms[bond->a2].y;
 
-    bond->z = (bond->atoms[0].z + bond->atoms[1].z) / 2;
+    bond->z = (bond->atoms[bond->a1].z + bond->atoms[bond->a2].z) / 2;
 
     bond->len = sqrt(pow(bond->x2 - bond->x1, 2) + pow(bond->y2 - bond->y1, 2));
 
