@@ -1,4 +1,5 @@
 test1.c
+<<<<<<< HEAD
 test1.o
 test
 test2.c
@@ -7,6 +8,11 @@ test3.c
 test3.o
 test6.c
 test6.o
+=======
+testPart1.c
+testPart1.o
+molecule.i
+>>>>>>> my_backup
 mol.o
 libmol.so
 myprog

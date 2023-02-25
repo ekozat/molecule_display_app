@@ -24,23 +24,49 @@ void atomget (atom *atom, char element[3], double *x, double *y, double *z){
 }
 
 // Purpose: Function should copy the values a1, a2, and epairs into corresponding attributes in bond
-void bondset (bond *bond, atom *a1, atom *a2, unsigned char epairs){
-    bond->a1 = a1;
-    bond->a2 = a2;
-    bond->epairs = epairs;
+// Changes: Function should copy paramater values into bond
+// void bondset (bond *bond, atom *a1, atom *a2, unsigned char epairs){
+//     bond->a1 = a1;
+//     bond->a2 = a2;
+//     bond->epairs = epairs;
+// }
+void bondset(bond *bond, unsigned short *a1, unsigned short *a2, atom **atoms, unsigned char *epairs){
+    bond->a1 = *a1;
+    bond->a2 = *a2;
+    bond->epairs = *epairs;
+
+    bond->atoms = *atoms;
+    //printf("%f", bond->atoms[0].y);
+
+    compute_coords(bond);
 }
 
 // Purpose: Function should copy the atom addresses in bond to a1, a2, and epairs
-void bondget (bond *bond, atom **a1, atom **a2, unsigned char *epairs){
+// Changes: Function should copy attributes in bond to parameters
+// void bondget (bond *bond, atom **a1, atom **a2, unsigned char *epairs){
     
+//     if (bond == NULL){
+//         return;
+//     }
+
+//     *a1 = bond->a1;
+//     *a2 = bond->a2;
+//     *epairs = bond->epairs;
+// }
+void bondget(bond *bond, unsigned short *a1, unsigned short *a2, atom **atoms, unsigned char *epairs){
+
     if (bond == NULL){
         return;
     }
 
     *a1 = bond->a1;
+    printf("%hu\n", bond->a1);
     *a2 = bond->a2;
+    printf("%hu\n", *a2);
     *epairs = bond->epairs;
+    *atoms = bond->atoms;
 }
+
 
 // Purpose: Assigning memory for the new molecule and all attributes/structs belonging to it
 molecule *molmalloc (unsigned short atom_max, unsigned short bond_max){
@@ -92,7 +118,7 @@ molecule *molcopy (molecule *src){
     for (int i = 0; i < src->atom_no; i++){
         molappend_atom(mol_new, &src->atoms[i]);   
     }
-
+    
     for (int i = 0; i < src->bond_no; i++){
         molappend_bond(mol_new, &src->bonds[i]);
     }
@@ -167,11 +193,10 @@ void molappend_atom (molecule *molecule, atom *atom){
 
     // add the atom
     if (molecule->atom_no < molecule->atom_max){
-
-        atomget(atom, molecule->atoms[molecule->atom_no].element, 
-                &(molecule->atoms[molecule->atom_no].x),
-                &(molecule->atoms[molecule->atom_no].y),
-                &(molecule->atoms[molecule->atom_no].z));
+        
+        //switch to atomset and test with A1 as well
+        atomset(&molecule->atoms[molecule->atom_no], atom->element,
+                &atom->x, &atom->y, &atom->z);
 
         // assign the atom pointers to the atoms
         molecule->atom_ptrs[molecule->atom_no] = &molecule->atoms[molecule->atom_no];
@@ -226,9 +251,9 @@ void molappend_bond (molecule *molecule, bond *bond){
 
     // add bond
     if (molecule->bond_no < molecule->bond_max){
-        bondget(bond, &molecule->bonds[molecule->bond_no].a1, 
-                &molecule->bonds[molecule->bond_no].a2, 
-                &molecule->bonds[molecule->bond_no].epairs);
+        // call with the molecule atoms to get bond atoms array to point to it
+        bondset(&molecule->bonds[molecule->bond_no], &bond->a1, &bond->a2,
+                &molecule->atoms, &bond->epairs);
 
         molecule->bond_ptrs[molecule->bond_no] = &molecule->bonds[molecule->bond_no];
         
@@ -292,6 +317,7 @@ void mol_xform (molecule *molecule, xform_matrix matrix){
     }
 
     double x_vector, y_vector, z_vector;
+    // int j = 0;
 
     for (int i = 0; i < molecule->atom_no; i++){
         // store in separate variable to avoid reassignment during calculation
@@ -303,6 +329,14 @@ void mol_xform (molecule *molecule, xform_matrix matrix){
         molecule->atoms[i].y = matrix[1][0] * x_vector + matrix[1][1] * y_vector + matrix[1][2] * z_vector;
         molecule->atoms[i].z = matrix[2][0] * x_vector + matrix[2][1] * y_vector + matrix[2][2] * z_vector;
 
+        //update information in the bond's atoms array 
+        // molecule->bonds->atoms[i] = molecule->atoms[i];
+
+    }
+
+    // FIX: we need to update the bond values with the atom values!
+    for (int i = 0; i < molecule->bond_no; i++){
+        compute_coords(&molecule->bonds[i]);
     }
 }
 
@@ -325,10 +359,25 @@ int cmpfunc_bond (const void *a, const void *b){
     a_bond = *(struct bond **)a;
     b_bond = *(struct bond **)b;
 
-    double a_avg = (a_bond->a1->z + a_bond->a2->z) / 2;
-    double b_avg = (b_bond->a1->z + b_bond->a2->z) / 2;
+    return (int)((a_bond->z > b_bond->z) - (a_bond->z < b_bond->z));
+}
 
-    return (int)((a_avg > b_avg) - (a_avg < b_avg));
+// should compute all coordinate values
+// Q: can atoms array have more than two values?
+void compute_coords(bond *bond){
+    bond->x1 = bond->atoms[bond->a1].x;
+    //printf("%f", bond->x1);
+    bond->x2 = bond->atoms[bond->a2].x;
+
+    bond->y1 = bond->atoms[bond->a1].y;
+    bond->y2 = bond->atoms[bond->a2].y;
+
+    bond->z = (bond->atoms[bond->a1].z + bond->atoms[bond->a2].z) / 2;
+
+    bond->len = sqrt(pow(bond->x2 - bond->x1, 2) + pow(bond->y2 - bond->y1, 2));
+
+    bond->dx = (bond->x2 - bond->x1) / bond->len;
+    bond->dy = (bond->y2 - bond->y1) / bond->len;
 }
 
 
