@@ -312,12 +312,8 @@ void mol_xform (molecule *molecule, xform_matrix matrix){
         return;
     }
 
-    // apply compute_coords to each bond in the molecule
-    for (int i = 0; i < molecule->bond_no; i++){
-        compute_coords(&molecule->bonds[i]);
-    }
-
     double x_vector, y_vector, z_vector;
+    // int j = 0;
 
     for (int i = 0; i < molecule->atom_no; i++){
         // store in separate variable to avoid reassignment during calculation
@@ -329,6 +325,14 @@ void mol_xform (molecule *molecule, xform_matrix matrix){
         molecule->atoms[i].y = matrix[1][0] * x_vector + matrix[1][1] * y_vector + matrix[1][2] * z_vector;
         molecule->atoms[i].z = matrix[2][0] * x_vector + matrix[2][1] * y_vector + matrix[2][2] * z_vector;
 
+        //update information in the bond's atoms array 
+        // molecule->bonds->atoms[i] = molecule->atoms[i];
+
+    }
+
+    // FIX: we need to update the bond values with the atom values!
+    for (int i = 0; i < molecule->bond_no; i++){
+        compute_coords(&molecule->bonds[i]);
     }
 }
 
