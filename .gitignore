@@ -1,12 +1,7 @@
 test1.c
-test1.o
-test
-test2.c
-test2.o
-test3.c
-test3.o
-test6.c
-test6.o
+testPart1.c
+testPart1.o
+molecule.i
 mol.o
 libmol.so
 myprog
