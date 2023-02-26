@@ -33,6 +33,20 @@ class Atom:
             f"y: {self.atom.y}\n" +\
             f"z: {self.z}"
 
+    def svg(self):
+        new_x = self.atom.x * 100.0 + offsetx
+        new_y = self.atom.y * 100.0 + offsety
+
+        for r in radius:
+            if self.atom.element == r:
+                new_r = radius[r]
+
+        for fill in radius:
+            if self.atom.element == fill:
+                new_fill = element_name[fill]
+
+        return f'  <circle cx="%.2f" cy="%.2f" r="%d" fill="%s"/>\n' % (new_x, new_y, new_r, new_fill)
+
 
 def main():
     x = 3.0
@@ -40,9 +54,10 @@ def main():
     c_atom = molecule.atom("H", x, 1.0, 4.0)
     atom = Atom(c_atom)
 
-    string = str(atom)
+    #string = str(atom)
+    string2 = atom.svg()
     
-    print(string)
+    print(string2)
 
 if __name__ == "__main__":
     main()
