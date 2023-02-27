@@ -16,8 +16,29 @@ class MyHandler( BaseHTTPRequestHandler ):
             self.end_headers()
             self.wfile.write( bytes( "404: not found", "utf-8" ) )
 
-    #def DO_POST(self):
-
+    # implement
+    def DO_POST(self):
+        if self.path == "/molecule"
+            # Parse the uploaded file into a Molecule object
+            content_len = int(self.headers.get('content-length', 0))
+            post_body = self.rfile.read(content_len)
+            mol = MolDisplay.Molecule()
+            mol.parse(post_body[4:])
+            
+            # Sort the atoms in the molecule
+            mol.sort()
+            
+            # Generate the SVG for the molecule
+            svg = mol.svg()
+            
+            # Send the SVG to the client
+            self.send_response(200)
+            self.send_header('Content-type', 'image/svg+xml')
+            self.send_header('Content-length', len(svg))
+            self.end_headers()
+            self.wfile.write(svg.encode())
+        else:
+            self.send_error(404, 'File Not Found')
 
 
 webform_page = """
