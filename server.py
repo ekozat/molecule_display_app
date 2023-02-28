@@ -3,7 +3,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 class MyHandler( BaseHTTPRequestHandler ):
     def do_GET(self):
-        if self.path == "/"
+        if self.path == "/":
             self.send_response(200) # OK response
             self.send_header( "Content-type", "text/html" )
             self.send_header( "Content-length", len(webform_page) )
@@ -18,7 +18,7 @@ class MyHandler( BaseHTTPRequestHandler ):
 
     # implement
     def DO_POST(self):
-        if self.path == "/molecule"
+        if self.path == "/molecule":
             # Parse the uploaded file into a Molecule object
             content_len = int(self.headers.get('content-length', 0))
             post_body = self.rfile.read(content_len)
@@ -43,20 +43,20 @@ class MyHandler( BaseHTTPRequestHandler ):
 
 webform_page = """
 <html>
-    <head>
-        <title> File Upload </title>
-    </head>
-    <body>
-        <h1> File Upload </h1>
-        <form action="molecule" enctype="multipart/form-data" method="post">
-            <p>
-                <input type="file" id="sdf_file" name="filename"/>
-            </p>
-            <p>
-                <input type="submit" value="Upload"/>
-            </p>
-        </form>
-    </body>
+  <head>
+    <title> File Upload </title>
+  </head>
+  <body>
+    <h1> File Upload </h1>
+    <form action="molecule" enctype="multipart/form-data" method="post">
+      <p>
+        <input type="file" id="sdf_file" name="filename"/>
+      </p>
+      <p>
+        <input type="submit" value="Upload"/>
+      </p>
+    </form>
+  </body>
 </html>"""
 
 httpd = HTTPServer( ( 'localhost', int(sys.argv[1]) ), MyHandler )
