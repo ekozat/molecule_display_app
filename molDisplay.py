@@ -102,44 +102,67 @@ class Molecule(molecule.molecule):
 
     def svg(self):
         #keep track of the number of elements in each array
-        a_num = self.atom_no
-        b_num = self.bond_no
+        a_num = self.atom_no - 1 # -1 because of indexing
+        b_num = self.bond_no - 1
 
         arr = []
-        print(self.atom_no)
-        print(self.bond_no)
+        print(a_num) # test
+        print(b_num) # test
 
         # pop the first two comparisons
-        a1 = mol.get_atom(a_num)#self.atoms.pop(a_num) #so not pop
-        a_num -= 1
-        b1 = mol.get_bond(b_num)#self.bonds.pop(b_num)
-        b_num -= 1
+        a1 = self.get_atom(a_num)#self.atoms.pop(a_num) #so not pop
+        # a_num -= 1
+        a1 = Atom(a1)
+
+        b1 = self.get_bond(b_num)#self.bonds.pop(b_num)
+        # b_num -= 1
+        b1 = Bond(b1)
+
+        print(a1.z)
 
         # compare and cycle
         # this might not work but it seems like it will
         while b_num >= 0 or a_num >= 0: 
+            print("loop") #test
+
             if a1.z < b1.z:
-                arr = append(a1.svg())
-                print(a1.str() + '\n')
+                print("atom") #test
+
+                arr.append(a1.svg())
+                print(a1.__str__() + '\n')
 
                 # if the atoms are done, start comparing bonds against bonds
                 if a_num < 0 and b_num >= 0:
-                    a1 = self.bonds.pop(b_num)
+                    a1 = self.get_bond(b_num)#self.bonds.pop(b_num)
                     b_num -= 1
+                    a1 = Bond(a1)
                 else:
-                    a1 = self.atoms.pop(a_num)
+                    a1 = self.get_atom(a_num)
                     a_num -= 1
+                    a1 = Atom(a1)
+
             elif b1.z < a1.z:
-                arr = append(b1.svg())
-                print(b1.str() + '\n')
+                print("bond") #test
+
+                arr.append(b1.svg())
+                print(b1.__str__() + '\n')
+
+                print(a_num) # test
+                print(b_num) # test
 
                 # if the bonds are sorted first, start comparing atoms against atoms
                 if b_num < 0 and a_num >= 0:
-                    b1 = self.atoms.pop(a_num)
+                    b1 = self.get_atom(a_num)
                     a_num -= 1
+                    b1 = Atom(b1)
+
                 else:
-                    b1 = self.bonds.pop(b_num)
+                    b1 = self.get_bond(b_num)
                     b_num -= 1
+                    b1 = Bond(b1)
+
+        print(a_num) # test
+        print(b_num) # test
 
         # return statement
         return header + f"{arr}" + footer
@@ -165,8 +188,8 @@ def main():
 
     ### bond testing ###
     mol = Molecule() # molecule.molecule() - creates a new molecule object
-    mol.append_atom("O", 2.5369, -0.1550, 0.0000)
-    mol.append_atom("H", 3.0739, 0.1550, 0.0000)
+    mol.append_atom("O", 2.5369, -0.1550, 1.5000)
+    mol.append_atom("H", 3.0739, 0.1550, 1.0000)
     mol.append_bond(1, 2, 1)
 
     c_bond = mol.get_bond(0)
@@ -175,12 +198,14 @@ def main():
     string = bond.svg()
     # print(string)
 
-    atom = mol.get_atom(0)
-    print(atom)
+    # atom = mol.get_atom(0)
+    # print(atom.x)
 
     # molecule svg test
     # mol = Molecule()
-    # ret = mol.svg()
+    print(mol.__str__())
+    ret = mol.svg()
+    print(ret)
 
     # parse test
     # idk if we need to put some intial binary data
