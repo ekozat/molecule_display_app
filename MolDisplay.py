@@ -55,9 +55,6 @@ class Bond:
         self.bond = c_bond
         self.z = c_bond.z
 
-    # how would I check all atoms array?
-    # f"atom1: {self.bond.atoms[self.bond.a1]}\n" +\
-    # f"atom2: {self.bond.atoms[self.bond.a2]}\n" +\
     def __str__(self):
         return f"a1, a2: {self.bond.a1}, {self.bond.a2}\n" +\
             f"epairs: {self.bond.epairs}\n" +\
@@ -106,29 +103,19 @@ class Molecule(molecule.molecule):
         b_num = self.bond_no - 1
 
         arr = []
-        print(a_num) # test
-        print(b_num) # test
 
         # pop the first two comparisons
-        a1 = self.get_atom(a_num)#self.atoms.pop(a_num) #so not pop
-        # a_num -= 1
+        a1 = self.get_atom(a_num)
         a1 = Atom(a1)
 
-        b1 = self.get_bond(b_num)#self.bonds.pop(b_num)
-        # b_num -= 1
+        b1 = self.get_bond(b_num)
         b1 = Bond(b1)
-
-        print(a1.z)
 
         # compare and cycle while bonds and atoms exist
         while b_num >= 0 and a_num >= 0: 
-            print("loop") #test
 
             if a1.z < b1.z:
-                print("atom") #test
-
                 arr.append(a1.svg())
-                print(a1.__str__() + '\n')
 
                 a_num -= 1
                 if a_num == -1:
@@ -137,10 +124,7 @@ class Molecule(molecule.molecule):
                 a1 = Atom(a1)
 
             elif b1.z < a1.z:
-                print("bond") #test
-
                 arr.append(b1.svg())
-                print(b1.__str__() + '\n')
 
                 b_num -= 1
                 if b_num == -1:
@@ -161,10 +145,6 @@ class Molecule(molecule.molecule):
                     b1 = self.get_bond(b_num)
                     b1 = Bond(b1)
 
-        
-        print(a_num) # test
-        print(b_num) # test
-
         # once one array ends, append the rest of the atoms or bond
         while a_num >= 0:
             a1 = self.get_atom(a_num)
@@ -176,9 +156,6 @@ class Molecule(molecule.molecule):
             b1 = Bond(b1)
             b_num -= 1
             arr.append(b1.svg())
-
-        print(a_num) # test
-        print(b_num) # test
 
         # return statement
         return header + f"{arr}" + footer
@@ -195,8 +172,6 @@ class Molecule(molecule.molecule):
         # read first two numbers
         a_count = int(line.strip().split()[0])
         b_count = int(line.strip().split()[1])
-        
-        print(a_count, b_count) # test
 
         # parse atoms
         for i in range(a_count):
@@ -209,6 +184,7 @@ class Molecule(molecule.molecule):
 
             self.append_atom(element, float(x), float(y), float(z))
 
+        # parse bonds
         for i in range(b_count):
             line = file.readline()
             
@@ -217,55 +193,3 @@ class Molecule(molecule.molecule):
             epairs = int(line.strip().split()[1])
 
             self.append_bond(a1, a2, epairs)
-
-
-
-
-
-
-def main():
-    ### atom testing ###
-    x = 3.0
-
-    c_atom = molecule.atom("H", x, 1.0, 4.0)
-    atom = Atom(c_atom)
-
-    #string = atom.str()
-    #string2 = atom.svg()
-    #print(string2)
-
-    ### bond testing ###
-    mol = Molecule() # molecule.molecule() - creates a new molecule object
-    mol.append_atom("O", 2.5369, -0.1550, 1.5000)
-    mol.append_atom("H", 3.0739, 0.1550, 1.0000)
-    mol.append_bond(1, 2, 1)
-
-    c_bond = mol.get_bond(0)
-    bond = Bond(c_bond)
-
-    string = bond.svg()
-    # print(string)
-
-    # atom = mol.get_atom(0)
-    # print(atom.x)
-
-    # molecule svg test
-    # mol = Molecule()
-    print(mol.__str__())
-    ret = mol.svg()
-    print(ret)
-
-    # parse test
-    # idk if we need to put some intial binary data
-    file = open("water-3D-structure-CT1000292221.sdf", "rb")
-    # load input data into BytesIO
-    text = io.TextIOWrapper(file)
-
-    mol.parse(file)
-
-    # for line in text:
-    #     print(line)
-
-if __name__ == "__main__":
-    main()
-

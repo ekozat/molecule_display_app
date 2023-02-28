@@ -31,22 +31,13 @@ typedef struct atom
     double x, y, z; 
 }atom;
 
-// describes covalent bond between two atoms
-// typedef struct bond
-// {
-//     atom *a1, *a2;
-//     unsigned char epairs; //number of electron pairs
-// }bond;
-
 typedef struct bond
 {
     unsigned short a1, a2; // indices of the two atoms in the array (change)
     unsigned char epairs; // stays the same as before
     atom *atoms; // holds entire array of the atoms
     double x1, x2, y1, y2, z, len, dx, dy; // instead of holding the doubles in the atom struct, we will hold them in the bond struct.
-    // z is average of the two atoms
-    // len is distance from a1 to a2
-    // dx = difference b/w x values and divided by len (dy is same)
+
 } bond;
 
 // represents molecule holding 0+ atoms and 0+ bonds
@@ -64,8 +55,6 @@ typedef double xform_matrix[3][3];
 // Functions
 void atomset (atom *atom, char element[3], double *x, double *y, double *z);
 void atomget (atom *atom, char element[3], double *x, double *y, double *z);
-// void bondset (bond *bond, atom *a1, atom *a2, unsigned char epairs);
-// void bondget (bond *bond, atom **a1, atom **a2, unsigned char *epairs);
 void bondset(bond *bond, unsigned short *a1, unsigned short *a2, atom **atoms, unsigned char *epairs);
 void bondget(bond *bond, unsigned short *a1, unsigned short *a2, atom **atoms, unsigned char *epairs);
 molecule *molmalloc (unsigned short atom_max, unsigned short bond_max);

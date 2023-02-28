@@ -26,4 +26,3 @@ testPart1.o:  testPart1.c mol.h
 
 myprog:  testPart1.o libmol.so _molecule.so
 	$(CC) $< -L. -lmol -lm -o $@
-	./myprog

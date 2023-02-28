@@ -1,6 +1,5 @@
 #include "mol.h"
 #include <math.h>
-//NOTE: remove exec from Makefile when finished
 
 // Purpose: Function should copy the values pointed to by element, x, y, and z into atom
 void atomset (atom *atom, char element[3], double *x, double *y, double *z){
@@ -23,36 +22,18 @@ void atomget (atom *atom, char element[3], double *x, double *y, double *z){
     strcpy(element, atom->element);
 }
 
-// Purpose: Function should copy the values a1, a2, and epairs into corresponding attributes in bond
-// Changes: Function should copy paramater values into bond
-// void bondset (bond *bond, atom *a1, atom *a2, unsigned char epairs){
-//     bond->a1 = a1;
-//     bond->a2 = a2;
-//     bond->epairs = epairs;
-// }
+// Purpose: Function should copy paramater values into bond
 void bondset(bond *bond, unsigned short *a1, unsigned short *a2, atom **atoms, unsigned char *epairs){
     bond->a1 = *a1;
     bond->a2 = *a2;
     bond->epairs = *epairs;
 
     bond->atoms = *atoms;
-    //printf("%f", bond->atoms[0].y);
 
     compute_coords(bond);
 }
 
-// Purpose: Function should copy the atom addresses in bond to a1, a2, and epairs
-// Changes: Function should copy attributes in bond to parameters
-// void bondget (bond *bond, atom **a1, atom **a2, unsigned char *epairs){
-    
-//     if (bond == NULL){
-//         return;
-//     }
-
-//     *a1 = bond->a1;
-//     *a2 = bond->a2;
-//     *epairs = bond->epairs;
-// }
+// Purpose: Function should copy attributes in bond to parameters
 void bondget(bond *bond, unsigned short *a1, unsigned short *a2, atom **atoms, unsigned char *epairs){
 
     if (bond == NULL){
@@ -60,9 +41,8 @@ void bondget(bond *bond, unsigned short *a1, unsigned short *a2, atom **atoms, u
     }
 
     *a1 = bond->a1;
-    printf("%hu\n", bond->a1);
     *a2 = bond->a2;
-    printf("%hu\n", *a2);
+
     *epairs = bond->epairs;
     *atoms = bond->atoms;
 }
@@ -317,7 +297,6 @@ void mol_xform (molecule *molecule, xform_matrix matrix){
     }
 
     double x_vector, y_vector, z_vector;
-    // int j = 0;
 
     for (int i = 0; i < molecule->atom_no; i++){
         // store in separate variable to avoid reassignment during calculation
@@ -329,17 +308,15 @@ void mol_xform (molecule *molecule, xform_matrix matrix){
         molecule->atoms[i].y = matrix[1][0] * x_vector + matrix[1][1] * y_vector + matrix[1][2] * z_vector;
         molecule->atoms[i].z = matrix[2][0] * x_vector + matrix[2][1] * y_vector + matrix[2][2] * z_vector;
 
-        //update information in the bond's atoms array 
-        // molecule->bonds->atoms[i] = molecule->atoms[i];
-
     }
 
-    // FIX: we need to update the bond values with the atom values!
+    // Update the bond values with the atom values
     for (int i = 0; i < molecule->bond_no; i++){
         compute_coords(&molecule->bonds[i]);
     }
 }
 
+// compares two z values from two atoms
 int cmpfunc_atom (const void *a, const void *b){
     struct atom *a_atom, *b_atom;
 
@@ -352,7 +329,7 @@ int cmpfunc_atom (const void *a, const void *b){
     return (int)((a_atom->z > b_atom->z) - (a_atom->z < b_atom->z));
 }
 
-// works with test2! 
+// compares two z values from two bonds
 int cmpfunc_bond (const void *a, const void *b){
     struct bond *a_bond, *b_bond;
 
@@ -363,10 +340,8 @@ int cmpfunc_bond (const void *a, const void *b){
 }
 
 // should compute all coordinate values
-// Q: can atoms array have more than two values?
 void compute_coords(bond *bond){
     bond->x1 = bond->atoms[bond->a1].x;
-    //printf("%f", bond->x1);
     bond->x2 = bond->atoms[bond->a2].x;
 
     bond->y1 = bond->atoms[bond->a1].y;
