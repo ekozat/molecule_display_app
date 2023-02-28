@@ -120,9 +120,8 @@ class Molecule(molecule.molecule):
 
         print(a1.z)
 
-        # compare and cycle
-        # this might not work but it seems like it will
-        while b_num >= 0 or a_num >= 0: 
+        # compare and cycle while bonds and atoms exist
+        while b_num >= 0 and a_num >= 0: 
             print("loop") #test
 
             if a1.z < b1.z:
@@ -131,15 +130,11 @@ class Molecule(molecule.molecule):
                 arr.append(a1.svg())
                 print(a1.__str__() + '\n')
 
-                # if the atoms are done, start comparing bonds against bonds
-                if a_num < 0 and b_num >= 0:
-                    a1 = self.get_bond(b_num)#self.bonds.pop(b_num)
-                    b_num -= 1
-                    a1 = Bond(a1)
-                else:
-                    a1 = self.get_atom(a_num)
-                    a_num -= 1
-                    a1 = Atom(a1)
+                a_num -= 1
+                if a_num == -1:
+                    continue
+                a1 = self.get_atom(a_num)
+                a1 = Atom(a1)
 
             elif b1.z < a1.z:
                 print("bond") #test
@@ -147,27 +142,46 @@ class Molecule(molecule.molecule):
                 arr.append(b1.svg())
                 print(b1.__str__() + '\n')
 
-                print(a_num) # test
-                print(b_num) # test
+                b_num -= 1
+                if b_num == -1:
+                    continue
+                b1 = self.get_bond(b_num)
+                b1 = Bond(b1)
+            else:
+                arr.append(a1.svg())
+                arr.append(b1.svg())
 
-                # if the bonds are sorted first, start comparing atoms against atoms
-                if b_num < 0 and a_num >= 0:
-                    b1 = self.get_atom(a_num)
-                    a_num -= 1
-                    b1 = Atom(b1)
+                a_num -= 1
+                if a_num >= 0:
+                    a1 = self.get_atom(a_num)
+                    a1 = Atom(a1)
 
-                else:
+                b_num -= 1
+                if b_num >= 0:
                     b1 = self.get_bond(b_num)
-                    b_num -= 1
                     b1 = Bond(b1)
+
+        
+        print(a_num) # test
+        print(b_num) # test
+
+        # once one array ends, append the rest of the atoms or bond
+        while a_num >= 0:
+            a1 = self.get_atom(a_num)
+            a1 = Atom(a1)
+            a_num -= 1
+            arr.append(a1.svg())
+        while b_num >= 0:
+            b1 = self.get_bond(b_num)
+            b1 = Bond(b1)
+            b_num -= 1
+            arr.append(b1.svg())
 
         print(a_num) # test
         print(b_num) # test
 
         # return statement
         return header + f"{arr}" + footer
-
-
 
 
     # def parse(self, file):
