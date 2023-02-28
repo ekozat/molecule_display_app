@@ -184,7 +184,41 @@ class Molecule(molecule.molecule):
         return header + f"{arr}" + footer
 
 
-    # def parse(self, file):
+    def parse(self, file):
+        a_count = 0
+        b_count = 0
+
+        # read first four lines
+        for i in range(4):
+            line = file.readline()
+
+        # read first two numbers
+        a_count = int(line.strip().split()[0])
+        b_count = int(line.strip().split()[1])
+        
+        print(a_count, b_count) # test
+
+        # parse atoms
+        for i in range(a_count):
+            line = file.readline()
+
+            x = float(line.strip().split()[0])
+            y = float(line.strip().split()[1])
+            z = float(line.strip().split()[2])
+            element = line.strip().split()[3].decode("utf-8") 
+
+            self.append_atom(element, float(x), float(y), float(z))
+
+        for i in range(b_count):
+            line = file.readline()
+            
+            a1 = int(line.strip().split()[0]) 
+            a2 = int(line.strip().split()[1])
+            epairs = int(line.strip().split()[1])
+
+            self.append_bond(a1, a2, epairs)
+
+
 
 
 
@@ -223,12 +257,14 @@ def main():
 
     # parse test
     # idk if we need to put some intial binary data
-    #file = open("CIS")
+    file = open("water-3D-structure-CT1000292221.sdf", "rb")
     # load input data into BytesIO
-    #text = io.TextIOWrapper(file)
+    text = io.TextIOWrapper(file)
 
-    #for line in text:
-    #    print(line)
+    mol.parse(file)
+
+    # for line in text:
+    #     print(line)
 
 if __name__ == "__main__":
     main()
