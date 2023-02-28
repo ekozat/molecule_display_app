@@ -94,6 +94,64 @@ class Bond:
         return f' <polygon points="%.2f,%.2f %.2f,%.2f %.2f,%.2f %.2f,%.2f" fill="green"/>\n' %\
                 (x1, y1, x2, y2, x3, y3, x4, y4)
 
+class Molecule(molecule.molecule):
+    def __str__(self):
+        return f"atom_max, atom_no: {self.atom_max}, {self.atom_no}\n" +\
+            f"bond_max, bond_no: {self.atom_max}, {self.atom_no}\n" +\
+            f"atoms address: {id(self.atoms)}"
+
+    def svg(self):
+        #keep track of the number of elements in each array
+        a_num = self.atom_no
+        b_num = self.bond_no
+
+        arr = []
+        print(self.atom_no)
+        print(self.bond_no)
+
+        # pop the first two comparisons
+        a1 = mol.get_atom(a_num)#self.atoms.pop(a_num) #so not pop
+        a_num -= 1
+        b1 = mol.get_bond(b_num)#self.bonds.pop(b_num)
+        b_num -= 1
+
+        # compare and cycle
+        # this might not work but it seems like it will
+        while b_num >= 0 or a_num >= 0: 
+            if a1.z < b1.z:
+                arr = append(a1.svg())
+                print(a1.str() + '\n')
+
+                # if the atoms are done, start comparing bonds against bonds
+                if a_num < 0 and b_num >= 0:
+                    a1 = self.bonds.pop(b_num)
+                    b_num -= 1
+                else:
+                    a1 = self.atoms.pop(a_num)
+                    a_num -= 1
+            elif b1.z < a1.z:
+                arr = append(b1.svg())
+                print(b1.str() + '\n')
+
+                # if the bonds are sorted first, start comparing atoms against atoms
+                if b_num < 0 and a_num >= 0:
+                    b1 = self.atoms.pop(a_num)
+                    a_num -= 1
+                else:
+                    b1 = self.bonds.pop(b_num)
+                    b_num -= 1
+
+        # return statement
+        return header + f"{arr}" + footer
+
+
+
+
+    # def parse(self, file):
+
+
+
+
 def main():
     ### atom testing ###
     x = 3.0
@@ -106,7 +164,7 @@ def main():
     #print(string2)
 
     ### bond testing ###
-    mol = molecule.molecule()
+    mol = Molecule() # molecule.molecule() - creates a new molecule object
     mol.append_atom("O", 2.5369, -0.1550, 0.0000)
     mol.append_atom("H", 3.0739, 0.1550, 0.0000)
     mol.append_bond(1, 2, 1)
@@ -115,7 +173,23 @@ def main():
     bond = Bond(c_bond)
 
     string = bond.svg()
-    print(string)
+    # print(string)
+
+    atom = mol.get_atom(0)
+    print(atom)
+
+    # molecule svg test
+    # mol = Molecule()
+    # ret = mol.svg()
+
+    # parse test
+    # idk if we need to put some intial binary data
+    #file = open("CIS")
+    # load input data into BytesIO
+    #text = io.TextIOWrapper(file)
+
+    #for line in text:
+    #    print(line)
 
 if __name__ == "__main__":
     main()
