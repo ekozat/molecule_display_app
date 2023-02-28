@@ -10,7 +10,6 @@ class MyHandler( BaseHTTPRequestHandler ):
             self.end_headers()
 
             self.wfile.write( bytes( webform_page, "utf-8" ))
-
         else:
             self.send_response( 404 )
             self.end_headers()
