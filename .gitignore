@@ -1,0 +1,25 @@
+test1.c
+testPart1.c
+testPart1.o
+molecule.i
+mol.o
+libmol.so
+myprog
+Grades.txt
+GradingLog.txt
+molecule_wrap.c
+molecule_wrap.o
+_molecule.so
+molecule.py
+molecule.pyc
+args.py
+imperial.py
+sniffer.py
+__pycache__
+testPart2.py
+makefile (1)
+server(1).py
+CID_31260.sdf
+caffeine-3D-structure-CT1001987571.sdf
+water-3D-structure-CT1000292221.sdf
+README.md
