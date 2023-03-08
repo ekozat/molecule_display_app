@@ -180,21 +180,66 @@ class Molecule(molecule.molecule):
 
         # parse atoms
         for i in range(a_count):
-            line = file.readline()
+            line = file.readline().decode("utf-8")
 
             x = float(line.strip().split()[0])
             y = float(line.strip().split()[1])
             z = float(line.strip().split()[2])
-            element = line.strip().split()[3].decode("utf-8") 
+            element = line.strip().split()[3]
 
             self.append_atom(element, float(x), float(y), float(z))
 
         # parse bonds
         for i in range(b_count):
-            line = file.readline()
+            line = file.readline().decode("utf-8")
             
             a1 = int(line.strip().split()[0]) 
             a2 = int(line.strip().split()[1])
             epairs = int(line.strip().split()[1])
 
             self.append_bond(a1, a2, epairs)
+
+
+def main():
+    ### atom testing ###
+    x = 3.0
+
+    c_atom = molecule.atom("H", x, 1.0, 4.0)
+    atom = Atom(c_atom)
+
+    #string = atom.str()
+    #string2 = atom.svg()
+    #print(string2)
+
+    ### bond testing ###
+    mol = Molecule() # molecule.molecule() - creates a new molecule object
+    mol.append_atom("O", 2.5369, -0.1550, 1.5000)
+    mol.append_atom("H", 3.0739, 0.1550, 1.0000)
+    mol.append_bond(1, 2, 1)
+
+    c_bond = mol.get_bond(0)
+    bond = Bond(c_bond)
+
+    string = bond.svg()
+    # print(string)
+
+    ### molecule svg test (sort bonds + atoms) ###
+
+    # molecule svg test
+    print(mol.__str__())
+    ret = mol.svg()
+    print(ret)
+
+    # parse test
+    # idk if we need to put some intial binary data
+    file = open("water-3D-structure-CT1000292221.sdf", "rb")
+    # load input data into BytesIO
+    text = io.TextIOWrapper(file)
+
+    # the holy trinity
+    mol.parse(file)
+    mol.sort()
+    svg = mol.svg()
+
+if __name__ == "__main__":
+    main()
