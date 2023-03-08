@@ -78,15 +78,15 @@ class Bond:
         # make sure drawing in the correct order
         # offset of atom1
         x1 = new_x1 - new_dy
-        y1 = new_y1 - new_dx
+        y1 = new_y1 + new_dx
         x2 = new_x1 + new_dy
-        y2 = new_y1 + new_dx
+        y2 = new_y1 - new_dx
 
         # offset of atom2
         x3 = new_x2 + new_dy
-        y3 = new_y2 + new_dx
+        y3 = new_y2 - new_dx
         x4 = new_x2 - new_dy
-        y4 = new_y2 - new_dx
+        y4 = new_y2 + new_dx
 
         return f' <polygon points="%.2f,%.2f %.2f,%.2f %.2f,%.2f %.2f,%.2f" fill="green"/>\n' %\
                 (x1, y1, x2, y2, x3, y3, x4, y4)
