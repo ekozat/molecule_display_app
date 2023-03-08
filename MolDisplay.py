@@ -97,6 +97,7 @@ class Molecule(molecule.molecule):
             f"bond_max, bond_no: {self.atom_max}, {self.atom_no}\n" +\
             f"atoms address: {id(self.atoms)}"
 
+    # issue with sort function
     def svg(self):
         #keep track of the number of elements in each array
         a_num = self.atom_no - 1 # -1 because of indexing
@@ -164,10 +165,14 @@ class Molecule(molecule.molecule):
     def parse(self, file):
         a_count = 0
         b_count = 0
+        # if in bytes decode, if not treat as string
 
         # read first four lines
         for i in range(4):
-            line = file.readline()
+            line = file.readline().decode()
+            # if (isinstance(line, bytes) == True):
+            #     line.decode()
+            
 
         # read first two numbers
         a_count = int(line.strip().split()[0])
