@@ -1,5 +1,5 @@
 import sys
-from MolDisplay import Molecule
+import MolDisplay
 from io import TextIOWrapper 
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
@@ -22,9 +22,11 @@ class MyHandler( BaseHTTPRequestHandler ):
         if self.path == "/molecule":
             # Parse the uploaded file into a Molecule object
             content_len = int(self.headers.get('content-length', 0))
-            post_body = self.rfile.read(content_len)
+            # post_body = self.rfile.read(content_len)
+            for i in range(4):
+              next(self.rfile)
             mol = MolDisplay.Molecule()
-            mol.parse(post_body[4:])
+            mol.parse(self.rfile)
             
             # Sort the atoms in the molecule
             mol.sort()
