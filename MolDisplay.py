@@ -227,7 +227,7 @@ class Molecule(molecule.molecule):
             
             a1 = int(line.strip().split()[0]) 
             a2 = int(line.strip().split()[1])
-            epairs = int(line.strip().split()[1])
+            epairs = int(line.strip().split()[2])
 
             self.append_bond(a1, a2, epairs)
 
