@@ -258,20 +258,23 @@ def main():
     ### molecule svg test (sort bonds + atoms) ###
 
     # molecule svg test
-    print(mol.__str__())
-    ret = mol.svg()
-    print(ret)
+    # print(mol.__str__())
+    # ret = mol.svg()
+    # print(ret) - uncomment for first test
 
     # parse test
     # idk if we need to put some intial binary data
-    file = open("water-3D-structure-CT1000292221.sdf", "rb")
+    mol2 = Molecule()
+    file = open("CID_31260.sdf", "rb")
     # load input data into BytesIO
     text = io.TextIOWrapper(file)
 
     # the holy trinity
-    mol.parse(file)
-    mol.sort()
-    svg = mol.svg()
+    mol2.parse(file)
+    mol2.sort()
+    # svg = mol2.svg()
+
+    #ok it works
 
 if __name__ == "__main__":
     main()
