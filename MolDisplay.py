@@ -66,30 +66,27 @@ class Bond:
 
     def svg(self):
         
+        ## Citation: TA helped correct calculations for bond structure ##
+
         # calculating proper pixel coords
-        new_x1 = self.bond.x1 * 100.0 + offsetx
-        new_x2 = self.bond.y1 * 100.0 + offsety
-        new_y1 = self.bond.x2 * 100.0 + offsetx
-        new_y2 = self.bond.y2 * 100.0 + offsetx
 
         new_dx = self.bond.dx * 10.0
         new_dy = self.bond.dy * 10.0
 
-        # make sure drawing in the correct order
-        # offset of atom1
-        x1 = new_x1 - new_dy
-        y1 = new_y1 + new_dx
-        x2 = new_x1 + new_dy
-        y2 = new_y1 - new_dx
+        p1 = ((self.bond.x1 * 100.0) + offsetx) - new_dy
+        p2 = ((self.bond.y1 * 100.0) + offsety) + new_dx
+        
+        p3 = ((self.bond.x1 * 100.0) + offsetx) + new_dy
+        p4 = ((self.bond.y1 * 100.0) + offsety) - new_dx
 
-        # offset of atom2
-        x3 = new_x2 + new_dy
-        y3 = new_y2 - new_dx
-        x4 = new_x2 - new_dy
-        y4 = new_y2 + new_dx
+        p5 = ((self.bond.x2 * 100) + offsetx) + new_dy
+        p6 = ((self.bond.y2 * 100) + offsety) - new_dx
+        
+        p7 = ((self.bond.x2 * 100) + offsetx) - new_dy
+        p8 = ((self.bond.y2 * 100) + offsety) + new_dx
 
         return f' <polygon points="%.2f,%.2f %.2f,%.2f %.2f,%.2f %.2f,%.2f" fill="green"/>\n' %\
-                (x1, y1, x2, y2, x3, y3, x4, y4)
+                (p1, p2, p3, p4, p5, p6, p7, p8)
 
 class Molecule(molecule.molecule):
     def __str__(self):
