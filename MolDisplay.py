@@ -91,14 +91,19 @@ class Bond:
 class Molecule(molecule.molecule):
     def __str__(self):
         return f"atom_max, atom_no: {self.atom_max}, {self.atom_no}\n" +\
-            f"bond_max, bond_no: {self.atom_max}, {self.atom_no}\n" +\
+            f"bond_max, bond_no: {self.bond_max}, {self.bond_no}\n" +\
             f"atoms address: {id(self.atoms)}"
 
     # issue with sort function
+    # Fixed: pop from the START
     def svg(self):
-        #keep track of the number of elements in each array
-        a_num = self.atom_no - 1 # -1 because of indexing
-        b_num = self.bond_no - 1
+        # keep track of the number of elements in each array
+        a_num = 0    #self.atom_no - 1 
+        b_num = 0    #self.bond_no - 1
+
+        # not self.atom_max because it is NOT how many atoms we have
+        a_max = self.atom_no # -1 because of indexing (last element)
+        b_max = self.bond_no
 
         arr = []
 
@@ -110,49 +115,79 @@ class Molecule(molecule.molecule):
         b1 = Bond(b1)
 
         # compare and cycle while bonds and atoms exist
-        while b_num >= 0 and a_num >= 0: 
-
+        # while b_num >= 0 and a_num >= 0 
+        while b_num < b_max and a_num < a_max: 
+            print()
+            print(f"a:{a1.z} vs. b:{b1.z}")
             if a1.z < b1.z:
                 arr.append(a1.svg())
 
-                a_num -= 1
-                if a_num == -1:
+                # test #
+                # print("Atom z is smaller than bond z")
+                # print(a1.__str__())
+
+                a_num += 1
+                if a_num == a_max:
                     continue
                 a1 = self.get_atom(a_num)
                 a1 = Atom(a1)
-
+                
             elif b1.z < a1.z:
                 arr.append(b1.svg())
 
-                b_num -= 1
-                if b_num == -1:
+                # test #
+                # print("Bond z is smaller than atom z")
+                # print(b1.__str__())
+
+                b_num += 1
+                if b_num == b_max:
                     continue
                 b1 = self.get_bond(b_num)
                 b1 = Bond(b1)
+
             else:
                 arr.append(a1.svg())
                 arr.append(b1.svg())
 
-                a_num -= 1
-                if a_num >= 0:
+                # test #
+                # print("Equal")
+                # print(a1.__str__())
+
+                # test #
+                # print("Equal")
+                # print(b1.__str__())
+
+                a_num += 1
+                if a_num < a_max:
                     a1 = self.get_atom(a_num)
                     a1 = Atom(a1)
 
-                b_num -= 1
-                if b_num >= 0:
+                b_num += 1
+                if b_num < b_max:
                     b1 = self.get_bond(b_num)
                     b1 = Bond(b1)
 
         # once one array ends, append the rest of the atoms or bond
-        while a_num >= 0:
+        while a_num < a_max:
+            print(a_num)
             a1 = self.get_atom(a_num)
             a1 = Atom(a1)
-            a_num -= 1
+
+            # test #
+            # print("bonds are done")
+            # print(a1.__str__())
+
+            a_num += 1
             arr.append(a1.svg())
-        while b_num >= 0:
+        while b_num < b_max:
             b1 = self.get_bond(b_num)
             b1 = Bond(b1)
-            b_num -= 1
+
+            # test #
+            # print("atoms are done")
+            # print(b1.__str__())
+
+            b_num += 1
             arr.append(b1.svg())
 
         # return statement
