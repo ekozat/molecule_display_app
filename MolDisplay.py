@@ -201,7 +201,7 @@ class Molecule(molecule.molecule):
 
         # read first four lines
         for i in range(4):
-            line = file.readline().decode()
+            line = file.readline()
             # if (isinstance(line, bytes) == True):
             #     line.decode()
             
@@ -212,7 +212,7 @@ class Molecule(molecule.molecule):
 
         # parse atoms
         for i in range(a_count):
-            line = file.readline().decode("utf-8")
+            line = file.readline()
 
             x = float(line.strip().split()[0])
             y = float(line.strip().split()[1])
@@ -223,7 +223,7 @@ class Molecule(molecule.molecule):
 
         # parse bonds
         for i in range(b_count):
-            line = file.readline().decode("utf-8")
+            line = file.readline()
             
             a1 = int(line.strip().split()[0]) 
             a2 = int(line.strip().split()[1])
@@ -239,6 +239,8 @@ def main():
     c_atom = molecule.atom("H", x, 1.0, 4.0)
     atom = Atom(c_atom)
 
+    print(atom.atom.x)
+
     #string = atom.str()
     #string2 = atom.svg()
     #print(string2)
@@ -251,6 +253,8 @@ def main():
 
     c_bond = mol.get_bond(0)
     bond = Bond(c_bond)
+
+    print(bond.bond.epairs)
 
     string = bond.svg()
     # print(string)
