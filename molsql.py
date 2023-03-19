@@ -123,12 +123,12 @@ class Database:
         ## insert into atom table
         self.conn.execute(f"""
         INSERT INTO Atoms(ELEMENT_CODE, X, Y, Z) 
-        VALUES ('{atom.atom.element}', {atom.atom.x}, {atom.atom.y}, {atom.z}) """)
+        VALUES ('{atom.element}', {atom.x}, {atom.y}, {atom.z}) """)
 
-        ## insert into molecule table
-        self.conn.execute(f"""
-        INSERT INTO Molecules (NAME) 
-        VALUES ('{molname}')""")
+        ## insert into molecule table - MISTAKE
+        # self.conn.execute(f"""
+        # INSERT INTO Molecules (NAME) 
+        # VALUES ('{molname}')""")
 
         # Get the atom and molecule id
         atom_id = self.conn.execute(f"""
@@ -136,8 +136,8 @@ class Database:
         # print(atom_id)
 
         mol_id = self.conn.execute(f"""
-        SELECT last_insert_rowid() FROM Molecules""").fetchone()[0]
-        # print(mol_id)
+        SELECT MOLECULE_ID FROM Molecules ORDER BY MOLECULE_ID DESC LIMIT 1""").fetchone()[0]
+        print(mol_id)
 
         ## insert into moleculeatom table
         self.conn.execute(f"""
