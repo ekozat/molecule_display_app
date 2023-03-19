@@ -189,6 +189,40 @@ class Database:
         for i in range(molecule.bond_no):
             self.add_bond( name, molecule.get_bond(i))
 
+    
+    # Is it guaranteed to be increasing atom ID?
+    def load_mol( self, name ):
+        molecule = MolDisplay.Molecule()
+
+        # Get molecule ID
+        id = self.conn.execute(f"""
+        SELECT MOLECULE_ID FROM Molecules WHERE
+        NAME='{name}'""").fetchone()[0]
+        # print(id)
+
+        # Get all atoms associated to the molecule id
+        atom_list = self.conn.execute(f"""
+        SELECT * FROM Atoms INNER JOIN MoleculeAtom ON
+        Atoms.ATOM_ID=MoleculeAtom.ATOM_ID AND
+        MoleculeAtom.MOLECULE_ID={id}""").fetchall()
+
+        # we need to fetch one at a time -> and insert into molecule via append_atom
+        for atom in atom_list:
+            molecule.append_atom(atom[1], atom[2], atom[3], atom[4])
+
+        # Get all bonds associated to the molecule id
+        bond_list = self.conn.execute(f"""
+        SELECT * FROM Bonds INNER JOIN MoleculeBond ON
+        Bonds.BOND_ID=MoleculeBond.BOND_ID AND
+        MoleculeBond.MOLECULE_ID={id}""").fetchall()
+
+        # fetch all bonds and insert into molecule
+        for bond in bond_list:
+            molecule.append_bond(bond[1], bond[2], bond[3])
+
+        return molecule
+
+
     # temporary
     def close( self ):
         self.conn.close()
