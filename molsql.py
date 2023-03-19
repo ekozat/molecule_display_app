@@ -217,6 +217,7 @@ class Database:
         MoleculeAtom.MOLECULE_ID={id}""").fetchall()
 
         # we need to fetch one at a time -> and insert into molecule via append_atom
+        #### NOTE: this might have problems with indexing ####
         for atom in atom_list:
             molecule.append_atom(atom[1], atom[2], atom[3], atom[4])
 
@@ -255,52 +256,61 @@ class Database:
 
         return element_name
 
-    def radial_gradient( self ):
+    def radial_gradients( self ):
+        arr = self.conn.execute(f"""
+        SELECT ELEMENT_NAME, COLOUR1, COLOUR2, COLOUR3 FROM Elements""").fetchall()
+        print(arr)
+        
+        radialGradientSVG = ""
+        for element in arr:
+            radialGradientSVG += """
+            <radialGradient id="%s" cx="-50%%" cy="-50%%" r="220%%" fx="20%%" fy="20%%">
+                <stop offset="0%%" stop-color="#%s"/>
+                <stop offset="50%%" stop-color="#%s"/>
+                <stop offset="100%%" stop-color="#%s"/>
+            </radialGradient>""" % (element[0], element[1], element[2], element[3])
 
+        return radialGradientSVG
+            
     # temporary
     def close( self ):
         self.conn.close()
         
 def main():
-    db = Database(reset=True)
-    db.create_tables()
-
+    db = Database(reset=True);
+    db.create_tables();
     db['Elements'] = ( 1, 'H', 'Hydrogen', 'FFFFFF', '050505', '020202', 25 );
     db['Elements'] = ( 6, 'C', 'Carbon', '808080', '010101', '000000', 40 );
     db['Elements'] = ( 7, 'N', 'Nitrogen', '0000FF', '000005', '000002', 40 );
     db['Elements'] = ( 8, 'O', 'Oxygen', 'FF0000', '050000', '020000', 40 );
-
-    ## INDIVIDUAL TEST FOR ADD_ATOM ##
-    # mol = MolDisplay.Molecule()
-    # mol.append_atom("O", 2.5369, -0.1550, 1.5000)
-    
-    # atom = MolDisplay.Atom(mol.get_atom(0))
-    # db.add_atom('Water', atom)
-
     fp = open( 'water-3D-structure-CT1000292221.sdf' );
     db.add_molecule( 'Water', fp );
     fp = open( 'caffeine-3D-structure-CT1001987571.sdf' );
     db.add_molecule( 'Caffeine', fp );
     fp = open( 'CID_31260.sdf' );
     db.add_molecule( 'Isopentanol', fp );
-    
     # display tables
-    pp( db.conn.execute( "SELECT * FROM Elements;" ).fetchall() );
-    # print()
-    # pp( db.conn.execute( "SELECT * FROM Molecules;" ).fetchall() );
-    # print()
-    # pp( db.conn.execute( "SELECT * FROM Atoms;" ).fetchall() );
-    # print()
-    # pp( db.conn.execute( "SELECT * FROM Bonds;" ).fetchall() );
-    # print()
-    # pp( db.conn.execute( "SELECT * FROM MoleculeAtom;" ).fetchall() );
-    # print()
-    # pp( db.conn.execute( "SELECT * FROM MoleculeBond;" ).fetchall() );
+    print( db.conn.execute( "SELECT * FROM Elements;" ).fetchall() );
+    print( db.conn.execute( "SELECT * FROM Molecules;" ).fetchall() );
+    print( db.conn.execute( "SELECT * FROM Atoms;" ).fetchall() );
+    print( db.conn.execute( "SELECT * FROM Bonds;" ).fetchall() );
+    print( db.conn.execute( "SELECT * FROM MoleculeAtom;" ).fetchall() );
+    print( db.conn.execute( "SELECT * FROM MoleculeBond;" ).fetchall() );
+    
+    db = Database(reset=False); # or use default
+    MolDisplay.radius = db.radius();
+    MolDisplay.element_name = db.element_name();
+    MolDisplay.header += db.radial_gradients();
 
-    mol2 = db.load_mol('Water')
-    db.radius()
+    
 
-    db.close()
+    for molecule in [ 'Water', 'Caffeine', 'Isopentanol' ]:
+        mol = db.load_mol( molecule );
+        mol.sort();
+        fp = open( molecule + ".svg", "w" );
+        fp.write( mol.svg() );
+        fp.close();
+
 
 if __name__ == "__main__":
     main()
