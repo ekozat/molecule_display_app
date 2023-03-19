@@ -148,20 +148,20 @@ class Database:
 
     def add_bond( self, molname, bond):
 
-        ## insert into atom table
+        ## insert into bond table
         self.conn.execute(f"""
         INSERT INTO Bonds(A1, A2, EPAIRS) 
-        VALUES ('{bond.bond.a1}', {bond.bond.a2}, {bond.bond.epairs} )""")
+        VALUES ('{bond.a1}', {bond.a2}, {bond.epairs} )""")
 
         ## insert into molecule table
-        self.conn.execute(f"""
-        INSERT INTO Molecules (NAME) 
-        VALUES ('{molname}')""")
+        # self.conn.execute(f"""
+        # INSERT INTO Molecules (NAME) 
+        # VALUES ('{molname}')""")
 
-        # Get the atom and molecule id
+        # Get the bond and molecule id
         bond_id = self.conn.execute(f"""
         SELECT last_insert_rowid() FROM Bonds""").fetchone()[0]
-        # print(atom_id)
+        # print(bond_id)
 
         mol_id = self.conn.execute(f"""
         SELECT MOLECULE_ID FROM Molecules ORDER BY MOLECULE_ID DESC LIMIT 1""").fetchone()[0]
