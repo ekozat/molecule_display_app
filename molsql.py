@@ -83,6 +83,8 @@ class Database:
                 FOREIGN KEY (MOLECULE_ID) REFERENCES Molecules(MOLECULE_ID),
                 FOREIGN KEY (BOND_ID) REFERENCES Bonds(BOND_ID) )""" )
 
+        self.conn.commit()
+
     # edge case of whether the amount of correct values have been added
     # could get indexing err
     def __setitem__( self, table, values ):
@@ -113,6 +115,8 @@ class Database:
         ## TEST TO ENSURE WORKS CORRECTLY
         # pp( self.conn.execute( f"""SELECT * FROM {table}""" ).fetchall() )
         # print()
+
+        self.conn.commit()
 
 
     # assuming atom is the atom object 
@@ -145,6 +149,7 @@ class Database:
         VALUES ({atom_id}, {mol_id})""")
 
         # pp( self.conn.execute( f"""SELECT * FROM MoleculeAtom""" ).fetchall() )
+        self.conn.commit()
 
     def add_bond( self, molname, bond):
 
@@ -172,6 +177,8 @@ class Database:
         INSERT INTO MoleculeBond (BOND_ID, MOLECULE_ID)
         VALUES ({bond_id}, {mol_id})""")
 
+        self.conn.commit()
+
     def add_molecule( self, name, fp):
         # create a molecule + parse the given file
         molecule = MolDisplay.Molecule()
@@ -188,6 +195,9 @@ class Database:
 
         for i in range(molecule.bond_no):
             self.add_bond( name, molecule.get_bond(i))
+
+
+        self.conn.commit()
 
     
     # Is it guaranteed to be increasing atom ID?
