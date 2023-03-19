@@ -223,6 +223,30 @@ class Database:
         return molecule
 
 
+    def radius ( self ):
+        radius = {}
+
+        arr = self.conn.execute(f"""
+        SELECT ELEMENT_CODE, RADIUS FROM Elements""").fetchall()
+
+        for element in arr:
+            radius[element[0]] = element[1]
+
+        return radius
+
+    def element_name ( self ):
+        element_name = {}
+
+        arr = self.conn.execute(f"""
+        SELECT ELEMENT_CODE, ELEMENT_NAME FROM Elements""").fetchall()
+
+        for element in arr:
+            element_name[element[0]] = element[1]
+
+        return element_name
+
+    def radial_gradient( self ):
+
     # temporary
     def close( self ):
         self.conn.close()
@@ -252,16 +276,19 @@ def main():
     
     # display tables
     pp( db.conn.execute( "SELECT * FROM Elements;" ).fetchall() );
-    print()
-    pp( db.conn.execute( "SELECT * FROM Molecules;" ).fetchall() );
-    print()
-    pp( db.conn.execute( "SELECT * FROM Atoms;" ).fetchall() );
-    print()
-    pp( db.conn.execute( "SELECT * FROM Bonds;" ).fetchall() );
-    print()
-    pp( db.conn.execute( "SELECT * FROM MoleculeAtom;" ).fetchall() );
-    print()
-    pp( db.conn.execute( "SELECT * FROM MoleculeBond;" ).fetchall() );
+    # print()
+    # pp( db.conn.execute( "SELECT * FROM Molecules;" ).fetchall() );
+    # print()
+    # pp( db.conn.execute( "SELECT * FROM Atoms;" ).fetchall() );
+    # print()
+    # pp( db.conn.execute( "SELECT * FROM Bonds;" ).fetchall() );
+    # print()
+    # pp( db.conn.execute( "SELECT * FROM MoleculeAtom;" ).fetchall() );
+    # print()
+    # pp( db.conn.execute( "SELECT * FROM MoleculeBond;" ).fetchall() );
+
+    mol2 = db.load_mol('Water')
+    db.radius()
 
     db.close()
 
