@@ -164,15 +164,30 @@ class Database:
         # print(atom_id)
 
         mol_id = self.conn.execute(f"""
-        SELECT last_insert_rowid() FROM Molecules""").fetchone()[0]
+        SELECT MOLECULE_ID FROM Molecules ORDER BY MOLECULE_ID DESC LIMIT 1""").fetchone()[0]
         # print(mol_id.fetchone()) - TEST
 
-        ## insert into moleculeatom table
+        ## insert into moleculebond table
         self.conn.execute(f"""
-        INSERT INTO MoleculeAtom (BOND_ID, MOLECULE_ID)
+        INSERT INTO MoleculeBond (BOND_ID, MOLECULE_ID)
         VALUES ({bond_id}, {mol_id})""")
 
-        
+    def add_molecule( self, name, fp):
+        # create a molecule + parse the given file
+        molecule = MolDisplay.Molecule()
+        molecule.parse(fp)
+
+        # add entry to the molecule table 
+        self.conn.execute(f"""
+        INSERT INTO Molecules (NAME)
+        VALUES ('{name}')""")
+
+        # Insert all atoms and bonds per molecule into db
+        for i in range(molecule.atom_no):
+            self.add_atom( name, molecule.get_atom(i))
+
+        for i in range(molecule.bond_no):
+            self.add_bond( name, molecule.get_bond(i))
 
     # temporary
     def close( self ):
@@ -187,12 +202,32 @@ def main():
     db['Elements'] = ( 7, 'N', 'Nitrogen', '0000FF', '000005', '000002', 40 );
     db['Elements'] = ( 8, 'O', 'Oxygen', 'FF0000', '050000', '020000', 40 );
 
-    mol = MolDisplay.Molecule()
-    mol.append_atom("O", 2.5369, -0.1550, 1.5000)
+    ## INDIVIDUAL TEST FOR ADD_ATOM ##
+    # mol = MolDisplay.Molecule()
+    # mol.append_atom("O", 2.5369, -0.1550, 1.5000)
     
-    atom = MolDisplay.Atom(mol.get_atom(0))
+    # atom = MolDisplay.Atom(mol.get_atom(0))
+    # db.add_atom('Water', atom)
 
-    db.add_atom('Water', atom)
+    fp = open( 'water-3D-structure-CT1000292221.sdf' );
+    db.add_molecule( 'Water', fp );
+    fp = open( 'caffeine-3D-structure-CT1001987571.sdf' );
+    db.add_molecule( 'Caffeine', fp );
+    fp = open( 'CID_31260.sdf' );
+    db.add_molecule( 'Isopentanol', fp );
+    
+    # display tables
+    pp( db.conn.execute( "SELECT * FROM Elements;" ).fetchall() );
+    print()
+    pp( db.conn.execute( "SELECT * FROM Molecules;" ).fetchall() );
+    print()
+    pp( db.conn.execute( "SELECT * FROM Atoms;" ).fetchall() );
+    print()
+    pp( db.conn.execute( "SELECT * FROM Bonds;" ).fetchall() );
+    print()
+    pp( db.conn.execute( "SELECT * FROM MoleculeAtom;" ).fetchall() );
+    print()
+    pp( db.conn.execute( "SELECT * FROM MoleculeBond;" ).fetchall() );
 
     db.close()
 
