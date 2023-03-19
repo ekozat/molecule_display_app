@@ -137,7 +137,7 @@ class Database:
 
         mol_id = self.conn.execute(f"""
         SELECT MOLECULE_ID FROM Molecules ORDER BY MOLECULE_ID DESC LIMIT 1""").fetchone()[0]
-        print(mol_id)
+        # print(mol_id)
 
         ## insert into moleculeatom table
         self.conn.execute(f"""
