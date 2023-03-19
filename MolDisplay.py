@@ -36,7 +36,7 @@ class Atom:
             if self.atom.element == fill:
                 new_fill = element_name[fill]
 
-        return f'  <circle cx="%.2f" cy="%.2f" r="%d" fill="%s"/>\n' % (new_x, new_y, new_r, new_fill)
+        return f'  <circle cx="%.2f" cy="%.2f" r="%d" fill="url(#%s)"/>\n' % (new_x, new_y, new_r, new_fill)
 
 class Bond:
     def __init__(self, c_bond):
@@ -213,8 +213,8 @@ class Molecule(molecule.molecule):
         for i in range(b_count):
             line = file.readline()
             
-            a1 = int(line.strip().split()[0]) 
-            a2 = int(line.strip().split()[1])
+            a1 = int(line.strip().split()[0]) - 1
+            a2 = int(line.strip().split()[1]) - 1
             epairs = int(line.strip().split()[2])
 
             self.append_bond(a1, a2, epairs)
