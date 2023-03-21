@@ -237,9 +237,7 @@ class Database:
     # Purpose: closing database connection
     def close( self ):
         self.conn.close()
-    
-## Main function testing ##
-
+        
 # def main():
 #     db = Database(reset=True);
 #     db.create_tables();
@@ -253,6 +251,8 @@ class Database:
 #     db.add_molecule( 'Caffeine', fp );
 #     fp = open( 'CID_31260.sdf' );
 #     db.add_molecule( 'Isopentanol', fp );
+#     fp = open( 'ETHANE-3D-structure-CT1000156871.sdf' );
+#     db.add_molecule( 'Ethane', fp );
 #     # display tables
 #     # print( db.conn.execute( "SELECT * FROM Elements;" ).fetchall() );
 #     # print( db.conn.execute( "SELECT * FROM Molecules;" ).fetchall() );
@@ -268,7 +268,7 @@ class Database:
 
     
 
-#     for molecule in [ 'Water', 'Caffeine', 'Isopentanol' ]:
+#     for molecule in [ 'Water', 'Caffeine', 'Isopentanol', 'Ethane' ]:
 #         mol = db.load_mol( molecule );
 #         mol.sort();
 #         fp = open( molecule + ".svg", "w" );
