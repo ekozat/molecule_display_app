@@ -3,8 +3,7 @@ import io
 
 mol = molecule.molecule() #create new molecule object
 
-header = """<svg version="1.1" width="1000" height="1000"
-xmlns="http://www.w3.org/2000/svg">"""
+header = """<svg version="1.1" width="1000" height="1000" xmlns="http://www.w3.org/2000/svg">"""
 
 footer = """</svg>"""
 
@@ -38,7 +37,7 @@ class Atom:
             if self.atom.element == fill:
                 new_fill = element_name[fill]
 
-        return f'  <circle cx="%.2f" cy="%.2f" r="%d" fill="url(#%s)"/>\n' % (new_x, new_y, new_r, new_fill)
+        return f' <circle cx="%.2f" cy="%.2f" r="%d" fill="url(#%s)"/>\n' % (new_x, new_y, new_r, new_fill)
 
 # Wrapper class for Bond struct
 class Bond:
@@ -97,7 +96,7 @@ class Molecule(molecule.molecule):
         a_max = self.atom_no 
         b_max = self.bond_no
 
-        arr = []
+        arr = ""
 
         # pop the first two comparisons
         a1 = self.get_atom(a_num)
@@ -111,7 +110,7 @@ class Molecule(molecule.molecule):
             
             # append atom
             if a1.z < b1.z:
-                arr.append(a1.svg())
+                arr += a1.svg()
                 a_num += 1
 
                 # index check
@@ -124,7 +123,7 @@ class Molecule(molecule.molecule):
             
             # append bond
             elif b1.z < a1.z:
-                arr.append(b1.svg())
+                arr += b1.svg()
                 b_num += 1
 
                 # index check
@@ -138,8 +137,8 @@ class Molecule(molecule.molecule):
             # the z values are equivalent
             else:
                 # append both
-                arr.append(a1.svg())
-                arr.append(b1.svg())
+                arr += a1.svg()
+                arr += b1.svg()
 
                 a_num += 1
                 if a_num < a_max:
@@ -163,7 +162,7 @@ class Molecule(molecule.molecule):
             a1 = Atom(a1)
 
             a_num += 1
-            arr.append(a1.svg())
+            arr += a1.svg()
 
         # When atoms are finished sorting, sort the rest of the bonds
         while b_num < b_max:
@@ -173,10 +172,10 @@ class Molecule(molecule.molecule):
             b1 = Bond(b1)
 
             b_num += 1
-            arr.append(b1.svg())
+            arr += b1.svg()
 
         # return statement
-        return header + f"{arr}" + footer
+        return header + arr + footer
 
     # Purpose: Takes in an sdf file and parses, adding the atoms/bonds to the molecule
     def parse(self, file):
