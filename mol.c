@@ -1,6 +1,8 @@
 #include "mol.h"
 #include <math.h>
 
+#define M_PI 3.14159265358979323846264338
+
 // Purpose: Function should copy the values pointed to by element, x, y, and z into atom
 void atomset (atom *atom, char element[3], double *x, double *y, double *z){
     atom->x = *x;
