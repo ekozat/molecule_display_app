@@ -7,7 +7,7 @@ import urllib
 import MolDisplay
 import molsql
 
-public_files = [ '/view.html', '/style.css', '/molecule.js' ];
+public_files = [ '/elements.html', '/style.css', '/molecule.js' ];
 
 class MyHandler( BaseHTTPRequestHandler ):
     def do_GET(self):
@@ -18,14 +18,46 @@ class MyHandler( BaseHTTPRequestHandler ):
             self.end_headers()
 
             self.wfile.write( bytes( webform_page, "utf-8" ))
+        elif self.path in public_files:   # make sure it's a valid file
+            self.send_response( 200 );  # OK
+            self.send_header( "Content-type", "text/html" );
+
+            fp = open( self.path[1:] ); 
+            # [1:] to remove leading / so that file is found in current dir
+
+            # load the specified file
+            page = fp.read();
+            fp.close();
+
+            # create and send headers
+            self.send_header( "Content-length", len(page) );
+            self.end_headers();
+
+            # send the contents
+            self.wfile.write( bytes( page, "utf-8" ) );
+
         else:
-            self.send_response( 404 )
-            self.end_headers()
-            self.wfile.write( bytes( "404: not found", "utf-8" ) )
+            # if the requested URL is not one of the public_files
+            self.send_response( 404 );
+            self.end_headers();
+            self.wfile.write( bytes( "THIS IS A TEST404: not found", "utf-8" ) );
 
     # implement
     def do_POST(self):
-        if self.path == "/molecule":
+        if self.path == "/elements.html":
+
+          content_len = int(self.headers.get('content-length', 0))
+
+          message = "elements changed and database updated"
+
+          self.send_response( 200 ); # OK
+          self.send_header( "Content-type", "text/plain" )
+          self.send_header( "Content-length", len(message) )
+          self.end_headers();
+
+          self.wfile.write( bytes( message, "utf-8" ) )
+
+        if self.path == "/display":
             # Parse the uploaded file into a Molecule object
             content_len = int(self.headers.get('content-length', 0))
 
@@ -61,7 +93,22 @@ webform_page = """
   </head>
   <body>
     <h1> Molecule Displayer </h1>
-    <form action="molecule" enctype="multipart/form-data" method="post">
+    <form action="elements.html" method="post" accept-charset="utf-8">
+      <p>
+        <input type="submit" value="element button"/>
+      </p>
+    </form>
+  </body>
+</html>"""
+
+webform_page1 = """
+<html>
+  <head>
+    <title> Menu </title>
+  </head>
+  <body>
+    <h1> Molecule Displayer </h1>
+    <form action="display" enctype="multipart/form-data" method="post">
       <p>
         <input type="file" id="sdf_file" name="filename"/>
       </p>
