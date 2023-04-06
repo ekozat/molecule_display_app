@@ -7,18 +7,11 @@ import urllib
 import MolDisplay
 import molsql
 
-public_files = [ '/elements.html', '/style.css', '/molecule.js' ];
+public_files = [ '/view.html', '/style.css', '/molecule.js'];
 
 class MyHandler( BaseHTTPRequestHandler ):
     def do_GET(self):
-        if self.path == "/":
-            self.send_response(200) # OK response
-            self.send_header( "Content-type", "text/html" )
-            self.send_header( "Content-length", len(webform_page) )
-            self.end_headers()
-
-            self.wfile.write( bytes( webform_page, "utf-8" ))
-        elif self.path in public_files:   # make sure it's a valid file
+        if self.path in public_files:   # make sure it's a valid file
             self.send_response( 200 );  # OK
             self.send_header( "Content-type", "text/html" );
 
@@ -40,13 +33,25 @@ class MyHandler( BaseHTTPRequestHandler ):
             # if the requested URL is not one of the public_files
             self.send_response( 404 );
             self.end_headers();
-            self.wfile.write( bytes( "THIS IS A TEST404: not found", "utf-8" ) );
+            self.wfile.write( bytes( "GET 404: not found", "utf-8" ) );
 
     # implement
     def do_POST(self):
-        if self.path == "/elements.html":
+        if self.path == "/elements_handler.html":
 
           content_len = int(self.headers.get('content-length', 0))
+          post_data = self.rfile.read(content_len)
+
+          # read what was sent 
+          print( repr( post_data.decode('utf-8') ) );
+
+          # convert POST content into a dictionary (only function that you need from urllib parse library)
+          postvars = urllib.parse.parse_qs( post_data.decode( 'utf-8' ) );
+
+          # parsed what was sent into a dictionary
+          print( postvars );
+
+          # NOTE: all the python code is on the server, all JS code on browser (both running at the same time))
 
           message = "elements changed and database updated"
 
@@ -56,6 +61,8 @@ class MyHandler( BaseHTTPRequestHandler ):
           self.end_headers();
 
           self.wfile.write( bytes( message, "utf-8" ) )
+        else:
+            self.send_error(404, 'File Not Found')
 
         if self.path == "/display":
             # Parse the uploaded file into a Molecule object
@@ -93,9 +100,9 @@ webform_page = """
   </head>
   <body>
     <h1> Molecule Displayer </h1>
-    <form action="elements.html" method="post" accept-charset="utf-8">
-      <p>
-        <input type="submit" value="element button"/>
+      <form action="elements.html" method="post" accept-charset="utf-8">
+        <p>
+          <input type="submit" value="elementman"/>
       </p>
     </form>
   </body>
