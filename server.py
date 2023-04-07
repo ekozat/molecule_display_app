@@ -7,11 +7,13 @@ import urllib
 import MolDisplay
 import molsql
 
-public_files = [ '/view.html', '/style.css', '/molecule.js'];
+public_files = [ '/view.html', '/style.css', '/molecule.js', '/elements.html'];
 
 class MyHandler( BaseHTTPRequestHandler ):
+    # Sends the html file to the server
     def do_GET(self):
-        if self.path in public_files:   # make sure it's a valid file
+        if self.path in public_files: 
+            # make sure it's a valid file
             self.send_response( 200 );  # OK
             self.send_header( "Content-type", "text/html" );
 
@@ -53,7 +55,15 @@ class MyHandler( BaseHTTPRequestHandler ):
 
           # NOTE: all the python code is on the server, all JS code on browser (both running at the same time))
 
-          message = "elements changed and database updated"
+          # ensure you do this only once
+          # db = molsql.Database(reset=True)
+          # db.create_tables()
+
+          # db['Elements'] = (postvars['num'], postvars['code'], postvars['name'],
+          #                   postvars['colour1'], postvars['colour2'], postvars['colour3'],
+          #                   postvars['radius'])
+
+          message = "database updated"
 
           self.send_response( 200 ); # OK
           self.send_header( "Content-type", "text/plain" )
