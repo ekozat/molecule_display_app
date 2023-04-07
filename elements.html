@@ -1,19 +1,41 @@
+<!doctype html>
 <html>
   <head>
     <title> Element Manipulation </title>
-<!--    <script src="molecule.js"></script> -->
-<!--     <link rel="stylesheet" type="text/css" href="style.css" /> -->
+    <!-- Imports jQuery libary = needs to be before other js script imports-->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="molecule.js" /></script>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="shortcut icon" href="#" />
   </head>
 
   <body>
-    <LABEL>Element:</LABEL>
-    <SELECT id="elements" name="elements" size="3">
-      <OPTION value="volvo">Volvo</OPTION>
-      <OPTION value="saab">Saab</OPTION>
-      <OPTION value="fiat">Fiat</OPTION>
-      <OPTION value="audi">Audi</OPTION>
-    </SELECT>
-    <BR/>
-
+    <h1> Molecule Displayer </h1>
+    <section id="elements">
+      <h2> Element Manipulation</h2>
+        <label>Element Number:</label>
+        <input type="text" id="elementnum"/>
+        <br/>
+        <label>Element Code:</label>
+        <input type="text" id="elementcode">
+        <br/>
+        <label>Element Name:</label>
+        <input type="text" id="elementname">
+        <br/>
+        <label for="colorpicker">Colour1:</label>
+        <input type="color" id="colorpicker1" value="#000000">
+        <br/>
+        <label for="colorpicker">Colour2:</label>
+        <input type="color" id="colorpicker2" value="#000000">
+        <br/>
+        <label for="colorpicker">Colour3:</label>
+        <input type="color" id="colorpicker3" value="#000000">
+        <br/>
+        <label>Radius:</label>
+        <input type="text" id="radius">
+        <br/>
+        <input type="submit" id="elementAdd" value="Add Element"/>
+        <input type="submit" id="elementRemove" value="Remove Element"/>
+    </section>
   </body>
 </html>
