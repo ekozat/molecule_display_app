@@ -53,18 +53,26 @@ class MyHandler( BaseHTTPRequestHandler ):
 
           # parsed what was sent into a dictionary
           print( postvars );
-
           # NOTE: all the python code is on the server, all JS code on browser (both running at the same time))
 
           # ensure you do this only once
-          # db = molsql.Database(reset=True)
-          # db.create_tables()
+          db = molsql.Database(reset=True)
+          db.create_tables()
 
-          # db['Elements'] = (postvars['num'], postvars['code'], postvars['name'],
-          #                   postvars['colour1'], postvars['colour2'], postvars['colour3'],
-          #                   postvars['radius'])
+          if int(postvars['action'][0]) == 1:
+            db['Elements'] = (int(postvars['num'][0]), postvars['code'][0], postvars['name'][0],
+                              postvars['colour1'][0], postvars['colour2'][0], postvars['colour3'][0],
+                              int(postvars['radius'][0]))
 
-          message = "database updated"
+            message = f"Element {postvars['code'][0]} added to the database"
+
+          elif int(postvars['action'][0]) == 0:
+            # add a way to remove elements
+            message = f"Element {postvars['code'][0]} removed from the database"
+          else:
+            message = "No action was provided, therefore no change has been implemented."
+
+          print( db.conn.execute( "SELECT * FROM Elements;" ).fetchall() )
 
           self.send_response( 200 ); # OK
           self.send_header( "Content-type", "text/plain" )
