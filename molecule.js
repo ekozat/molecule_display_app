@@ -6,7 +6,7 @@ $(document).ready(
   function()
   {
     /* add a click handler for our button */
-    $("#elementAdd").click(
+    $("#elementbutton").click(
       function()
       {
 		/* ajax post (path, data, callback function) */ //new connection gets made from the browser to the server (post request)
@@ -21,17 +21,17 @@ $(document).ready(
 			colour2: $("#colorpicker2").val(),
 			colour3: $("#colorpicker3").val(),
 			radius: $("#radius").val(),
-			extra_info: "some stuff here"
+			action: $("#action").val()
 		},
 		function( data, status )
 		{
 			alert( "Data: " + data + "\nStatus: " + status );
 			//$("$label").text(data); returns text content of element
 		}
-	).fail(function(err, status) {
-		alert("Something went wrong");
-		// something went wrong, check err and status
-	 });
+		).fail(function(err, status) {
+			alert("Something went wrong");
+			// something went wrong, check err and status
+	 	});
       }
     );
   }
