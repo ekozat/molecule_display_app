@@ -7,7 +7,8 @@ import urllib
 import MolDisplay
 import molsql
 
-public_files = [ '/view.html', '/style.css', '/molecule.js', '/elements.html'];
+public_files = [ '/view.html', '/style.css', '/molecule.js', '/elements.html', 
+'/sdf.html', '/molecule.html'];
 
 class MyHandler( BaseHTTPRequestHandler ):
     # Sends the html file to the server
