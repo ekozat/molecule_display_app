@@ -12,31 +12,48 @@
 
   <body>
     <h1> Molecule Displayer </h1>
-    <section id="elements">
-      <h2> Element Manipulation</h2>
-        <label>Element Number:</label>
-        <input type="text" id="elementnum"/>
-        <br/>
-        <label>Element Code:</label>
-        <input type="text" id="elementcode">
-        <br/>
-        <label>Element Name:</label>
-        <input type="text" id="elementname">
-        <br/>
-        <label for="colorpicker">Colour1:</label>
-        <input type="color" id="colorpicker1" value="#000000">
-        <br/>
-        <label for="colorpicker">Colour2:</label>
-        <input type="color" id="colorpicker2" value="#000000">
-        <br/>
-        <label for="colorpicker">Colour3:</label>
-        <input type="color" id="colorpicker3" value="#000000">
-        <br/>
-        <label>Radius:</label>
-        <input type="text" id="radius">
-        <br/>
-        <input type="submit" id="elementAdd" value="Add Element"/>
-        <input type="submit" id="elementRemove" value="Remove Element"/>
-    </section>
+    <div id="existingelements">
+      <h2> Existing Elements</h2>
+      <table>
+        <tr> <th>Element Number</th> <th>Element Code</th> <th>Element name</th> 
+          <th>Colour 1</th> <th>Colour 2</th> <th>Colour 3</th> <th>Radius</th>
+        </tr>
+      </table>
+    </div>
+
+    <div id="newelements">
+      <section>
+        <h2> Element Manipulation</h2>
+      </section>
+      <label>Element Number:</label>
+      <input type="number" id="elementnum" value="1" required>
+      <br/>
+      <label>Element Code:</label>
+      <input type="text" id="elementcode" value="H" required>
+      <br/>
+      <label>Element Name:</label>
+      <input type="text" id="elementname" value="Hydrogen" required>
+      <br/>
+      <label for="colorpicker">Colour1:</label>
+      <input type="color" id="colorpicker1" value="#000000">
+      <br/>
+      <label for="colorpicker">Colour2:</label>
+      <input type="color" id="colorpicker2" value="#000000">
+      <br/>
+      <label for="colorpicker">Colour3:</label>
+      <input type="color" id="colorpicker3" value="#000000">
+      <br/>
+      <label>Radius:</label>
+      <input type="number" id="radius" value="25" required>
+      <br/>
+      <label for="action">Choose an Action:</label>
+      <select id="action" required>
+        <option value="">--Please choose an option--</option>
+        <option value="1">Add Element</option>
+        <option value="0">Remove Element</option>
+      </select>
+      <br/>
+      <input type="submit" id="elementbutton" value="Update Database"/>
+  </div>
   </body>
 </html>
