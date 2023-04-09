@@ -25,6 +25,8 @@ class MyHandler( BaseHTTPRequestHandler ):
                 columns = [column[0] for column in data.description]
                 rows = [dict(zip(columns, row)) for row in data.fetchall()]
                 json_data = json.dumps(rows)
+
+                print(json_data)
                 
                 # Set headers for JSON data
                 self.send_response(200)
@@ -48,6 +50,37 @@ class MyHandler( BaseHTTPRequestHandler ):
                 # Send HTML page
                 self.wfile.write(bytes(page, 'utf-8'))
 
+        elif self.path == '/molecule.html':
+            if 'application/json' in self.headers.get('Accept'):
+                # Get SQLite3 data
+                data = db.conn.execute("SELECT * FROM Molecules;")
+                columns = [column[0] for column in data.description]
+                rows = [dict(zip(columns, row)) for row in data.fetchall()]
+                json_data = json.dumps(rows)
+
+                print(json_data)
+                
+                # Set headers for JSON data
+                self.send_response(200)
+                self.send_header('Content-type', 'application/json')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+
+                # Send JSON data
+                self.wfile.write(bytes(json_data, 'utf-8'))
+            else:
+                fp = open(self.path[1:])
+                page = fp.read()
+                fp.close()
+
+                # Set headers
+                self.send_response(200)
+                self.send_header('Content-type', 'text/html')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+
+                # Send HTML page
+                self.wfile.write(bytes(page, 'utf-8'))
         elif self.path in public_files: 
             # make sure it's a valid file
             self.send_response( 200 );  # OK
