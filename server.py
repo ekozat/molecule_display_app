@@ -64,7 +64,6 @@ class MyHandler( BaseHTTPRequestHandler ):
 
             # send the contents
             self.wfile.write( bytes( page, "utf-8" ) );
-
         else:
             # if the requested URL is not one of the public_files
             self.send_response( 404 );
@@ -73,6 +72,7 @@ class MyHandler( BaseHTTPRequestHandler ):
 
     # implement
     def do_POST(self):
+        ### ELEMENT HANDLER FOR DB ###
         if self.path == "/elements_handler.html":
 
           content_len = int(self.headers.get('content-length', 0))
@@ -88,20 +88,16 @@ class MyHandler( BaseHTTPRequestHandler ):
           print( postvars );
           # NOTE: all the python code is on the server, all JS code on browser (both running at the same time))
 
-          # ensure you do this only once
-          db = molsql.Database(reset=True)
-          db.create_tables()
+          if int(postvars['eaction'][0]) == 1:
+            db['Elements'] = (int(postvars['enum'][0]), postvars['ecode'][0], postvars['ename'][0],
+                              postvars['ecolour1'][0], postvars['ecolour2'][0], postvars['ecolour3'][0],
+                              int(postvars['eradius'][0]))
 
-          if int(postvars['action'][0]) == 1:
-            db['Elements'] = (int(postvars['num'][0]), postvars['code'][0], postvars['name'][0],
-                              postvars['colour1'][0], postvars['colour2'][0], postvars['colour3'][0],
-                              int(postvars['radius'][0]))
+            message = f"Element {postvars['ecode'][0]} added to the database"
 
-            message = f"Element {postvars['code'][0]} added to the database"
-
-          elif int(postvars['action'][0]) == 0:
+          elif int(postvars['eaction'][0]) == 0:
             # add a way to remove elements
-            message = f"Element {postvars['code'][0]} removed from the database"
+            message = f"Element {postvars['ecode'][0]} removed from the database"
           else:
             message = "No action was provided, therefore no change has been implemented."
 
