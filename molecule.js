@@ -62,7 +62,18 @@ $(document).ready(
       success: function(data, status, xhr) {
         if (xhr.getResponseHeader('Content-Type') === 'application/json') {
           // Handle JSON data here
-          console.log("hello")
+          var table = $('#table_elements');
+          for (var i = 0; i < data.length; i++) {
+            var element = data[i]
+
+            var string = '<tr><td>' + element["ELEMENT_NO"] + '</td><td>' + 
+            element["ELEMENT_CODE"] + '</td><td>' + element["ELEMENT_NAME"] + 
+            '</td><td>' + element["COLOUR1"] + '</td><td>' + element["COLOUR2"] +
+            '</td><td>' + element["COLOUR3"] + '</td><td>' + element["RADIUS"];
+
+            table.append(string);
+          }
+
         } else {
           // Handle other data types here
           console.log(xhr.getResponseHeader('Content-Type'))
@@ -71,7 +82,7 @@ $(document).ready(
       },
       error: function(xhr, status, error) {
         // Handle error here
-        console.log("Goodbye")
+        console.log('Error: ' + status + ' - ' + error);
       }
     });
   }
