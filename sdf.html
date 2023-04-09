@@ -12,15 +12,12 @@
 
   <body>
     <div id="upload">
-      <form action="display" enctype="multipart/form-data" method="post">
-        <p> <input type="file" id="sdf_file" name="filename" accept=".sdf"/> </p>
-        <p>
-          <label for="molname">Molecule Name:</label> 
-          <input type="text" id="molname" required/> 
-        </p>
-        <p> <input type="submit" value="Upload"/> </p>
-      </form>
-        
-
-
+      <p> <input type="file" id="sdf" name="filename" accept=".sdf"/> </p>
+      <p>
+        <label for="molname">Molecule Name:</label> 
+        <input type="text" id="molname" required/> 
+      </p>
+      <p> <input type="submit" id="uploadbutton" value="Upload"/> </p>
+    </div>
   </body>
+</html>
