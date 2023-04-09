@@ -115,6 +115,31 @@ class MyHandler( BaseHTTPRequestHandler ):
           self.wfile.write( bytes( message, "utf-8" ) )
         else:
             self.send_error(404, 'File Not Found')
+        ### HANDLER FOR SDF FILE UPLOADS ###
+        if self.path == "/sdf_handler.html":
+
+          content_len = int(self.headers.get('content-length', 0))
+          post_data = self.rfile.read(content_len)
+
+          # read what was sent 
+          print( repr( post_data.decode('utf-8') ) );
+          postvars = urllib.parse.parse_qs( post_data.decode( 'utf-8' ) );
+          print( postvars );
+
+          # add the molecule to the database
+          fp = open(postvars["fp"][0][12:])
+          db.add_molecule( postvars["mname"][0], fp ) 
+
+          message = "molecule added to the database"
+
+          self.send_response( 200 ); # OK
+          self.send_header( "Content-type", "text/plain" )
+          self.send_header( "Content-length", len(message) )
+          self.end_headers();
+
+          self.wfile.write( bytes( message, "utf-8" ) )
+        else:
+          self.send_error(404, 'File Not Found')        
 
         if self.path == "/display":
             # Parse the uploaded file into a Molecule object
