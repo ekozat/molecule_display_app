@@ -34,6 +34,46 @@ $(document).ready(
 	 	});
       }
     );
+    
+    /* HANDLER for all sdf document uploads*/
+    $("#uploadbutton").click( 
+      function()
+      {
+    $.post("/sdf_handler.html",
+    /* pass a JavaScript dictionary */ //key and value pairs = name: retrieves value (key)
+    {
+      fp: $("#sdf").val(),
+      mname: $("#molname").val()
+    },
+    function( data, status )
+    {
+      alert( "Data: " + data + "\nStatus: " + status );
+      //$("$label").text(data); returns text content of element
+    });
+      }
+	  );
+
+    /* updates element listing*/
+    // so its only seeing text/html
+    $.ajax({
+      url: 'elements.html',
+      type: 'GET',
+      dataType: 'json',
+      success: function(data, status, xhr) {
+        if (xhr.getResponseHeader('Content-Type') === 'application/json') {
+          // Handle JSON data here
+          console.log("hello")
+        } else {
+          // Handle other data types here
+          console.log(xhr.getResponseHeader('Content-Type'))
+          console.log(data)
+        }
+      },
+      error: function(xhr, status, error) {
+        // Handle error here
+        console.log("Goodbye")
+      }
+    });
   }
 
 )
