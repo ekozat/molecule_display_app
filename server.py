@@ -3,6 +3,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 import io
 import sys
 import urllib
+import json
 
 import MolDisplay
 import molsql
@@ -10,18 +11,50 @@ import molsql
 public_files = [ '/view.html', '/style.css', '/molecule.js', '/elements.html', 
 '/sdf.html', '/molecule.html'];
 
+# ensure you do this only once
+db = molsql.Database(reset=True)
+db.create_tables()
+
 class MyHandler( BaseHTTPRequestHandler ):
     # Sends the html file to the server
     def do_GET(self):
-        if self.path in public_files: 
+        if self.path == '/elements.html':
+            if 'application/json' in self.headers.get('Accept'):
+                # Get SQLite3 data
+                data = db.conn.execute("SELECT * FROM Elements;")
+                columns = [column[0] for column in data.description]
+                rows = [dict(zip(columns, row)) for row in data.fetchall()]
+                json_data = json.dumps(rows)
+                
+                # Set headers for JSON data
+                self.send_response(200)
+                self.send_header('Content-type', 'application/json')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+
+                # Send JSON data
+                self.wfile.write(bytes(json_data, 'utf-8'))
+            else:
+                fp = open(self.path[1:])
+                page = fp.read()
+                fp.close()
+
+                # Set headers
+                self.send_response(200)
+                self.send_header('Content-type', 'text/html')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+
+                # Send HTML page
+                self.wfile.write(bytes(page, 'utf-8'))
+
+        elif self.path in public_files: 
             # make sure it's a valid file
             self.send_response( 200 );  # OK
             self.send_header( "Content-type", "text/html" );
 
             fp = open( self.path[1:] ); 
             # [1:] to remove leading / so that file is found in current dir
-
-            # load the specified file
             page = fp.read();
             fp.close();
 
