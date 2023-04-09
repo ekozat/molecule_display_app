@@ -12,27 +12,27 @@
 
   <body>
     <h1> Molecule Displayer </h1>
-    <div id="existingelements">
+    <div id="existing_elements">
       <h2> Existing Elements</h2>
-      <table>
+      <table id="table_elements">
         <tr> <th>Element Number</th> <th>Element Code</th> <th>Element name</th> 
           <th>Colour 1</th> <th>Colour 2</th> <th>Colour 3</th> <th>Radius</th>
         </tr>
       </table>
     </div>
 
-    <div id="newelements">
+    <div id="new_elements">
       <section>
         <h2> Element Manipulation</h2>
       </section>
       <label>Element Number:</label>
-      <input type="number" id="elementnum" value="1" required>
+      <input type="number" id="element_num" value="1" required>
       <br/>
       <label>Element Code:</label>
-      <input type="text" id="elementcode" value="H" required>
+      <input type="text" id="element_code" value="H" required>
       <br/>
       <label>Element Name:</label>
-      <input type="text" id="elementname" value="Hydrogen" required>
+      <input type="text" id="element_name" value="Hydrogen" required>
       <br/>
       <label for="colorpicker">Colour1:</label>
       <input type="color" id="colorpicker1" value="#000000">
@@ -53,7 +53,7 @@
         <option value="0">Remove Element</option>
       </select>
       <br/>
-      <input type="submit" id="elementbutton" value="Update Database"/>
+      <input type="submit" id="element_button" value="Update Database"/>
   </div>
   </body>
 </html>
