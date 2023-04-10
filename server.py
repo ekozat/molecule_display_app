@@ -12,7 +12,7 @@ public_files = [ '/view.html', '/style.css', '/molecule.js', '/elements.html',
 '/sdf.html', '/molecule.html'];
 
 # ensure you do this only once
-db = molsql.Database(reset=True)
+db = molsql.Database()
 db.create_tables()
 
 class MyHandler( BaseHTTPRequestHandler ):
