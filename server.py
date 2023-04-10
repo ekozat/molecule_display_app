@@ -81,6 +81,14 @@ class MyHandler( BaseHTTPRequestHandler ):
 
                 # Send HTML page
                 self.wfile.write(bytes(page, 'utf-8'))
+                
+        elif self.path == '/svg.html':
+            svg = generate_svg()
+            self.send_response(200)
+            self.send_header('Content-type', 'image/svg+xml')
+            self.end_headers()
+            self.wfile.write(svg.encode())
+            
         elif self.path in public_files: 
             # make sure it's a valid file
             self.send_response( 200 );  # OK
@@ -106,6 +114,7 @@ class MyHandler( BaseHTTPRequestHandler ):
     # implement
     def do_POST(self):
         ### ELEMENT HANDLER FOR DB ###
+        print(self.path)
         if self.path == "/elements_handler.html":
 
           content_len = int(self.headers.get('content-length', 0))
@@ -151,9 +160,9 @@ class MyHandler( BaseHTTPRequestHandler ):
           post_data = self.rfile.read(content_len)
 
           # read what was sent 
-          print( repr( post_data.decode('utf-8') ) );
-          postvars = urllib.parse.parse_qs( post_data.decode( 'utf-8' ) );
-          print( postvars );
+          print( repr( post_data.decode('utf-8') ) )
+          postvars = urllib.parse.parse_qs( post_data.decode( 'utf-8' ) )
+          print( postvars )
 
           # add the molecule to the database
           fp = open(postvars["fp"][0][12:])
@@ -173,28 +182,39 @@ class MyHandler( BaseHTTPRequestHandler ):
         if self.path == "/display":
             # Parse the uploaded file into a Molecule object
             content_len = int(self.headers.get('content-length', 0))
+            post_data = self.rfile.read(content_len)
 
-            for i in range(4):
-              next(self.rfile)
-
-            mol = MolDisplay.Molecule()
-
-            # read it in as a textfile
-            textFile = io.TextIOWrapper(self.rfile, encoding='utf-8')
-            mol.parse(textFile)
+            # read what was sent 
+            print( repr( post_data.decode('utf-8') ) )
+            postvars = urllib.parse.parse_qs( post_data.decode( 'utf-8' ) )
+            print( postvars )
             
-            # Sort the atoms in the molecule
+            molecule = postvars["mol"][0]
+
+            # add python libraries and radial gradients
+            MolDisplay.radius = db.radius();
+            MolDisplay.element_name = db.element_name();
+            MolDisplay.header += db.radial_gradients();
+            # print("Hello" + molecule)
+
+            # for i in range(4):
+            #   next(self.rfile)
+
+
+            mol = db.load_mol(molecule)
             mol.sort()
-            
-            # Generate the SVG for the molecule
+            # fp = open( molecule + ".svg", "w" )
             svg = mol.svg()
-            
+
+            # print(fp)
+
             # Send the SVG to the client
             self.send_response(200)
             self.send_header('Content-type', 'image/svg+xml')
             self.send_header('Content-length', len(svg))
             self.end_headers()
-            self.wfile.write(svg.encode())
+            # hopefully this is right!
+            self.wfile.write( svg.encode() )
         else:
             self.send_error(404, 'File Not Found')
 
