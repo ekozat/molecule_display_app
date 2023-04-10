@@ -138,8 +138,21 @@ class MyHandler( BaseHTTPRequestHandler ):
             message = f"Element {postvars['ecode'][0]} added to the database"
 
           elif int(postvars['eaction'][0]) == 0:
-            # add a way to remove elements
-            message = f"Element {postvars['ecode'][0]} removed from the database"
+            result_set = db.conn.execute( f"""SELECT * FROM Elements WHERE ELEMENT_NO=? AND ELEMENT_CODE=?
+            AND ELEMENT_NAME=? AND COLOUR1=? AND COLOUR2=? AND COLOUR3=? AND RADIUS=?""", (int(postvars['enum'][0]),
+            postvars['ecode'][0], postvars['ename'][0], postvars['ecolour1'][0], postvars['ecolour2'][0], 
+            postvars['ecolour3'][0], postvars['eradius'][0] ) ).fetchall()
+            
+            if len(result_set) == 0:
+                message = f"Element {postvars['ecode'][0]} is not in the database"
+            else:
+                db.conn.execute( f"""DELETE FROM Elements WHERE ELEMENT_NO=? AND ELEMENT_CODE=?
+                AND ELEMENT_NAME=? AND COLOUR1=? AND COLOUR2=? AND COLOUR3=? AND RADIUS=?""", (int(postvars['enum'][0]),
+                postvars['ecode'][0], postvars['ename'][0], postvars['ecolour1'][0], postvars['ecolour2'][0], 
+                postvars['ecolour3'][0], postvars['eradius'][0] ) )
+
+                # add a way to remove elements
+                message = f"Element {postvars['ecode'][0]} removed from the database"
           else:
             message = "No action was provided, therefore no change has been implemented."
 
