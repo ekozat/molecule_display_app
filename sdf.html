@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+  <head>
+    <title> SDF File Upload </title>
+    <!-- Imports jQuery libary = needs to be before other js script imports-->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="molecule.js" /></script>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="shortcut icon" href="#" />
+    <input type="button" value="Main Page" onclick="location.href='view.html'"/>
+  </head>
+
+  <body>
+    <div id="upload">
+      <p> <input type="file" id="sdf" name="filename" accept=".sdf"/> </p>
+      <p>
+        <label for="mol_name">Molecule Name:</label> 
+        <input type="text" id="mol_name" required/> 
+      </p>
+      <p> <input type="submit" id="upload_button" value="Upload"/> </p>
+    </div>
+  </body>
+</html>
