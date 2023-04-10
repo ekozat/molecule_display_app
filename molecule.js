@@ -90,20 +90,20 @@ $(document).ready(
     $("#display_button").click( 
         function()
         {
-        $.post("/display",
-        /* pass a JavaScript dictionary */ //key and value pairs = name: retrieves value (key)
-        {
-            mol: $("#mol_choice").val()
-        },
-        function( data, status )
-        {
-            alert( "Data: " + data + "\nStatus: " + status );
-            console.log(data);
-            //$("$label").text(data); returns text content of element
-        }).fail(function(err, status){
-            console.log("Goodbye");
-        });
-    }
+            $.post("/display.html",
+            /* pass a JavaScript dictionary */ //key and value pairs = name: retrieves value (key)
+            {
+                mol: $("#mol_choice").val()
+            },
+            function( data, status )
+            {
+                alert( "Data: " + data + "\nStatus: " + status );
+                console.log(data);
+                //$("$label").text(data); returns text content of element
+            }).fail(function(data, err, status){
+                console.log("Err: " + err.responseText + "\nStatus: " + status);
+            });
+        }
     );
 
     /* updates molecule listing*/
@@ -136,4 +136,5 @@ $(document).ready(
         console.log('Error: ' + status + ' - ' + error);
         }
     });
+    
 })
