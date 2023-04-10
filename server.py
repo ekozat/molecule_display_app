@@ -82,12 +82,16 @@ class MyHandler( BaseHTTPRequestHandler ):
                 # Send HTML page
                 self.wfile.write(bytes(page, 'utf-8'))
 
-        elif self.path == '/svg.html':
-            svg = generate_svg()
+        elif self.path.endswith(".svg"):
+            with open(self.path[1:], "rb") as f:
+                svg_data = f.read()
+
+            print(svg_data)
             self.send_response(200)
             self.send_header('Content-type', 'image/svg+xml')
+            self.send_header('Content-length', len(svg_data))
             self.end_headers()
-            self.wfile.write(svg.encode())
+            self.wfile.write(svg_data)
             
         elif self.path in public_files: 
             # make sure it's a valid file
@@ -130,26 +134,28 @@ class MyHandler( BaseHTTPRequestHandler ):
           print( postvars );
           # NOTE: all the python code is on the server, all JS code on browser (both running at the same time))
 
+          # parsing to remove '#' for radial_gradients svg function
+          colour1 = postvars['ecolour1'][0].replace('#', '')
+          colour2 = postvars['ecolour2'][0].replace('#', '')
+          colour3 = postvars['ecolour3'][0].replace('#', '')
+
           if int(postvars['eaction'][0]) == 1:
             db['Elements'] = (int(postvars['enum'][0]), postvars['ecode'][0], postvars['ename'][0],
-                              postvars['ecolour1'][0], postvars['ecolour2'][0], postvars['ecolour3'][0],
-                              int(postvars['eradius'][0]))
+                              colour1, colour2, colour3, int(postvars['eradius'][0]))
 
             message = f"Element {postvars['ecode'][0]} added to the database"
 
           elif int(postvars['eaction'][0]) == 0:
             result_set = db.conn.execute( f"""SELECT * FROM Elements WHERE ELEMENT_NO=? AND ELEMENT_CODE=?
             AND ELEMENT_NAME=? AND COLOUR1=? AND COLOUR2=? AND COLOUR3=? AND RADIUS=?""", (int(postvars['enum'][0]),
-            postvars['ecode'][0], postvars['ename'][0], postvars['ecolour1'][0], postvars['ecolour2'][0], 
-            postvars['ecolour3'][0], postvars['eradius'][0] ) ).fetchall()
+            postvars['ecode'][0], postvars['ename'][0], colour1, colour2, colour3, postvars['eradius'][0] ) ).fetchall()
             
             if len(result_set) == 0:
                 message = f"Element {postvars['ecode'][0]} is not in the database"
             else:
                 db.conn.execute( f"""DELETE FROM Elements WHERE ELEMENT_NO=? AND ELEMENT_CODE=?
                 AND ELEMENT_NAME=? AND COLOUR1=? AND COLOUR2=? AND COLOUR3=? AND RADIUS=?""", (int(postvars['enum'][0]),
-                postvars['ecode'][0], postvars['ename'][0], postvars['ecolour1'][0], postvars['ecolour2'][0], 
-                postvars['ecolour3'][0], postvars['eradius'][0] ) )
+                postvars['ecode'][0], postvars['ename'][0], colour1, colour2, colour3, postvars['eradius'][0] ) )
 
                 # add a way to remove elements
                 message = f"Element {postvars['ecode'][0]} removed from the database"
@@ -212,12 +218,16 @@ class MyHandler( BaseHTTPRequestHandler ):
 
             mol = db.load_mol(molecule)
             mol.sort()
-            svg = mol.svg()
+            svg_data = mol.svg()
 
-            # Send the SVG to the client
-            self.send_response(200)
-            self.send_header('Content-type', 'image/svg+xml')
-            self.send_header('Content-length', len(svg))
+            # Write the SVG data to a file on the server
+            filename = "molecule.svg"
+            with open(filename, "w") as f:
+                f.write(svg_data)
+
+            # Redirect the client to the URL of the SVG file
+            self.send_response(302)
+            self.send_header("Location", "/molecule.svg")
             self.end_headers()
     
             self.wfile.write( svg.encode() )
