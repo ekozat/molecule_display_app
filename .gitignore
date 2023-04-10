@@ -5,8 +5,6 @@ molecule.i
 mol.o
 libmol.so
 myprog
-Grades.txt
-GradingLog.txt
 molecule_wrap.c
 molecule_wrap.o
 _molecule.so
@@ -24,5 +22,7 @@ caffeine-3D-structure-CT1001987571.sdf
 water-3D-structure-CT1000292221.sdf
 SQL.py
 sql2.py
-server.py
+ajaxserver.py
+script.js
+index.html
 README.md
