@@ -28,6 +28,8 @@ class Atom:
         # ensures that we draw on the correct pixels
         new_x = self.atom.x * 100.0 + offsetx
         new_y = self.atom.y * 100.0 + offsety
+        new_r = 0
+        new_fill = "" 
 
         for r in radius:
             if self.atom.element == r:
