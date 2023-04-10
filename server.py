@@ -86,7 +86,6 @@ class MyHandler( BaseHTTPRequestHandler ):
             with open(self.path[1:], "rb") as f:
                 svg_data = f.read()
 
-            print(svg_data)
             self.send_response(200)
             self.send_header('Content-type', 'image/svg+xml')
             self.send_header('Content-length', len(svg_data))
