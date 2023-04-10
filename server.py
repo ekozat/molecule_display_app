@@ -26,7 +26,7 @@ class MyHandler( BaseHTTPRequestHandler ):
                 rows = [dict(zip(columns, row)) for row in data.fetchall()]
                 json_data = json.dumps(rows)
 
-                print(json_data)
+                # print(json_data)
                 
                 # Set headers for JSON data
                 self.send_response(200)
@@ -58,7 +58,7 @@ class MyHandler( BaseHTTPRequestHandler ):
                 rows = [dict(zip(columns, row)) for row in data.fetchall()]
                 json_data = json.dumps(rows)
 
-                print(json_data)
+                # print(json_data)
                 
                 # Set headers for JSON data
                 self.send_response(200)
@@ -81,7 +81,7 @@ class MyHandler( BaseHTTPRequestHandler ):
 
                 # Send HTML page
                 self.wfile.write(bytes(page, 'utf-8'))
-                
+
         elif self.path == '/svg.html':
             svg = generate_svg()
             self.send_response(200)
@@ -114,7 +114,7 @@ class MyHandler( BaseHTTPRequestHandler ):
     # implement
     def do_POST(self):
         ### ELEMENT HANDLER FOR DB ###
-        print(self.path)
+        # print(self.path)
         if self.path == "/elements_handler.html":
 
           content_len = int(self.headers.get('content-length', 0))
@@ -156,7 +156,7 @@ class MyHandler( BaseHTTPRequestHandler ):
           else:
             message = "No action was provided, therefore no change has been implemented."
 
-          print( db.conn.execute( "SELECT * FROM Elements;" ).fetchall() )
+          # print( db.conn.execute( "SELECT * FROM Elements;" ).fetchall() )
 
           self.send_response( 200 ); # OK
           self.send_header( "Content-type", "text/plain" )
@@ -192,7 +192,7 @@ class MyHandler( BaseHTTPRequestHandler ):
         else:
           self.send_error(404, 'File Not Found')        
 
-        if self.path == "/display":
+        if self.path == "/display.html":
             # Parse the uploaded file into a Molecule object
             content_len = int(self.headers.get('content-length', 0))
             post_data = self.rfile.read(content_len)
@@ -206,27 +206,20 @@ class MyHandler( BaseHTTPRequestHandler ):
 
             # add python libraries and radial gradients
             MolDisplay.radius = db.radius();
+            # print(db.radius())
             MolDisplay.element_name = db.element_name();
             MolDisplay.header += db.radial_gradients();
-            # print("Hello" + molecule)
-
-            # for i in range(4):
-            #   next(self.rfile)
-
 
             mol = db.load_mol(molecule)
             mol.sort()
-            # fp = open( molecule + ".svg", "w" )
             svg = mol.svg()
-
-            # print(fp)
 
             # Send the SVG to the client
             self.send_response(200)
             self.send_header('Content-type', 'image/svg+xml')
             self.send_header('Content-length', len(svg))
             self.end_headers()
-            # hopefully this is right!
+    
             self.wfile.write( svg.encode() )
         else:
             self.send_error(404, 'File Not Found')
